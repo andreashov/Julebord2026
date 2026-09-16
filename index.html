@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Julebord 2026 — Invitasjon</title>
+<meta name="description" content="Du er invitert til Julebord 2026. Meld deg på og betal enkelt med Vipps." />
+<meta name="theme-color" content="#0f2419" />
+
+<!-- Open Graph: gir en fin forhåndsvisning når lenken deles i meldinger -->
+<meta property="og:title" content="Julebord 2026 — du er invitert" />
+<meta property="og:description" content="Meld deg på og betal med Vipps. Trykk for detaljer." />
+<meta property="og:type" content="website" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+/* =========================================================================
+   KONFIGURASJON AV UTSEENDE (farger). Endre fritt.
+   ========================================================================= */
+:root{
+  --bg:#0d1f16;            /* dyp granskygge  */
+  --bg-2:#0f2419;          /* litt lysere grønn */
+  --panel:#13291d;         /* kort/paneler */
+  --panel-line:rgba(212,175,110,.22);
+  --ink:#f3ede1;           /* hovedtekst (varm off-white) */
+  --ink-soft:#c9c2b2;      /* dempet tekst */
+  --gold:#d9b978;          /* gull-aksent */
+  --gold-strong:#e7cd94;
+  --burgundy:#7c2b3b;      /* dyp rød aksent */
+  --vipps:#ff5b24;         /* Vipps oransje */
+  --ok:#5fbf8f;
+  --err:#e08a86;
+  --radius:16px;
+  --shadow:0 18px 50px -20px rgba(0,0,0,.65);
+  --maxw:560px;
+}
+
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0;
+  background:
+    radial-gradient(1200px 600px at 50% -10%, rgba(217,185,120,.10), transparent 60%),
+    linear-gradient(180deg, var(--bg-2), var(--bg) 40%);
+  color:var(--ink);
+  font-family:"Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  min-height:100dvh;
+}
+
+.wrap{
+  max-width:var(--maxw);
+  margin:0 auto;
+  padding:28px 20px calc(48px + env(safe-area-inset-bottom));
+}
+
+/* ---------- Toppseksjon / hero ---------- */
+.hero{
+  text-align:center;
+  padding:22px 8px 8px;
+}
+.eyebrow{
+  letter-spacing:.28em;
+  text-transform:uppercase;
+  font-size:.72rem;
+  color:var(--gold);
+  font-weight:600;
+  margin-bottom:14px;
+}
+.title{
+  font-family:"Cormorant Garamond", Georgia, serif;
+  font-weight:700;
+  font-size:clamp(2.9rem, 13vw, 4.4rem);
+  line-height:.98;
+  margin:0;
+  letter-spacing:.5px;
+}
+.title .year{
+  display:block;
+  color:var(--gold-strong);
+  font-style:italic;
+  font-weight:600;
+}
+.ornament{
+  display:flex; align-items:center; justify-content:center; gap:12px;
+  margin:18px auto 6px; color:var(--gold); opacity:.85;
+}
+.ornament::before,.ornament::after{
+  content:""; height:1px; width:56px;
+  background:linear-gradient(90deg,transparent,var(--gold));
+}
+.ornament::after{background:linear-gradient(90deg,var(--gold),transparent);}
+.lead{
+  color:var(--ink-soft);
+  font-size:1.02rem;
+  max-width:44ch;
+  margin:14px auto 0;
+}
+
+/* ---------- Kort ---------- */
+.card{
+  background:linear-gradient(180deg, var(--panel), #112418);
+  border:1px solid var(--panel-line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:22px 20px;
+  margin-top:22px;
+}
+.card h2{
+  font-family:"Cormorant Garamond", Georgia, serif;
+  font-size:1.7rem;
+  margin:0 0 14px;
+  font-weight:600;
+  letter-spacing:.3px;
+}
+
+/* ---------- Detaljer ---------- */
+.details{list-style:none; margin:0; padding:0;}
+.details li{
+  display:flex; gap:14px; align-items:flex-start;
+  padding:12px 0;
+  border-bottom:1px dashed rgba(212,175,110,.16);
+}
+.details li:last-child{border-bottom:0;}
+.details .ic{
+  flex:0 0 auto; width:34px; height:34px;
+  display:grid; place-items:center;
+  border-radius:9px;
+  background:rgba(217,185,120,.12);
+  color:var(--gold-strong);
+}
+.details .k{font-size:.74rem; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); }
+.details .v{font-size:1.05rem; color:var(--ink); font-weight:500;}
+.details .v small{display:block; color:var(--ink-soft); font-weight:400; font-size:.85rem; margin-top:2px;}
+
+.price-badge{
+  display:inline-flex; align-items:baseline; gap:8px;
+  background:rgba(124,43,59,.28);
+  border:1px solid rgba(217,185,120,.3);
+  color:var(--gold-strong);
+  padding:6px 14px; border-radius:999px;
+  font-weight:600; margin-top:2px;
+}
+.price-badge b{font-size:1.15rem; color:var(--ink);}
+
+/* ---------- Skjema ---------- */
+form{margin-top:4px;}
+.field{margin-bottom:16px;}
+.field label{
+  display:block; font-size:.82rem; font-weight:600;
+  color:var(--ink); margin-bottom:7px;
+}
+.field .hint{color:var(--ink-soft); font-weight:400;}
+.req{color:var(--gold);}
+input, select, textarea{
+  width:100%;
+  background:#0c1c13;
+  border:1px solid rgba(212,175,110,.28);
+  color:var(--ink);
+  border-radius:11px;
+  padding:13px 14px;
+  font-size:1rem; /* 16px+ hindrer zoom på iOS */
+  font-family:inherit;
+  transition:border-color .15s, box-shadow .15s;
+  -webkit-appearance:none; appearance:none;
+}
+select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='none' stroke='%23d9b978' stroke-width='2'><path d='M4 7l5 5 5-5'/></svg>");background-repeat:no-repeat;background-position:right 12px center;padding-right:38px;}
+input:focus, select:focus, textarea:focus{
+  outline:none;
+  border-color:var(--gold);
+  box-shadow:0 0 0 3px rgba(217,185,120,.15);
+}
+textarea{min-height:84px; resize:vertical;}
+
+.btn{
+  width:100%;
+  border:0; cursor:pointer;
+  border-radius:12px;
+  padding:15px 18px;
+  font-size:1.05rem; font-weight:600;
+  font-family:inherit;
+  transition:transform .06s ease, filter .15s, background .15s;
+}
+.btn:active{transform:translateY(1px);}
+.btn-primary{
+  background:linear-gradient(180deg,var(--gold-strong),var(--gold));
+  color:#2a1c0a;
+}
+.btn-primary:disabled{opacity:.6; cursor:not-allowed; filter:saturate(.6);}
+.btn-vipps{
+  background:var(--vipps); color:#fff;
+  display:flex; align-items:center; justify-content:center; gap:10px;
+}
+.btn-vipps:hover{filter:brightness(1.05);}
+
+.form-note{font-size:.8rem; color:var(--ink-soft); margin-top:4px; text-align:center;}
+
+.msg{
+  border-radius:11px; padding:12px 14px; margin-top:14px;
+  font-size:.92rem; display:none;
+}
+.msg.show{display:block;}
+.msg.err{background:rgba(224,138,134,.12); border:1px solid rgba(224,138,134,.4); color:var(--err);}
+
+/* ---------- Betalingssteg (vises etter påmelding) ---------- */
+#pay{display:none;}
+#pay.show{display:block; animation:rise .4s ease both;}
+@keyframes rise{from{opacity:0; transform:translateY(10px);}to{opacity:1; transform:none;}}
+.pay-hero{text-align:center;}
+.check{
+  width:56px;height:56px;margin:0 auto 6px;border-radius:50%;
+  background:rgba(95,191,143,.15);border:1px solid rgba(95,191,143,.5);
+  display:grid;place-items:center;color:var(--ok);
+}
+.steps{counter-reset:s; list-style:none; padding:0; margin:16px 0 20px;}
+.steps li{
+  counter-increment:s; position:relative;
+  padding:6px 0 6px 40px; color:var(--ink-soft); font-size:.95rem;
+}
+.steps li::before{
+  content:counter(s); position:absolute; left:0; top:4px;
+  width:26px;height:26px;border-radius:50%;
+  background:rgba(217,185,120,.14); color:var(--gold-strong);
+  display:grid; place-items:center; font-size:.8rem; font-weight:700;
+}
+.steps b{color:var(--ink);}
+.ref-tip{
+  background:rgba(124,43,59,.22);
+  border:1px solid rgba(217,185,120,.28);
+  border-radius:11px; padding:12px 14px; margin-top:6px;
+  font-size:.9rem; color:var(--ink);
+}
+
+footer{
+  text-align:center; color:var(--ink-soft); font-size:.8rem;
+  margin-top:30px; opacity:.8;
+}
+footer .snow{color:var(--gold); letter-spacing:.4em;}
+
+/* Redusert bevegelse */
+@media (prefers-reduced-motion: reduce){
+  *{animation:none !important;}
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+
+  <!-- ================= HERO ================= -->
+  <header class="hero">
+    <div class="eyebrow">Du er hjertelig invitert</div>
+    <h1 class="title">Julebord<span class="year">2026</span></h1>
+    <div class="ornament">❆</div>
+    <p class="lead" id="lead-text">
+      Bli med på årets hyggeligste kveld — god mat, godt drikke og enda bedre selskap.
+      Meld deg på her, så ordner vi resten.
+    </p>
+  </header>
+
+  <!-- ================= DETALJER ================= -->
+  <section class="card" aria-labelledby="detaljer-h">
+    <h2 id="detaljer-h">Detaljer</h2>
+    <ul class="details">
+      <li>
+        <span class="ic" aria-hidden="true">📅</span>
+        <span><span class="k">Når</span><span class="v" id="d-date">Fredag 4. desember 2026<small id="d-time">Kl. 19:00</small></span></span>
+      </li>
+      <li>
+        <span class="ic" aria-hidden="true">📍</span>
+        <span><span class="k">Hvor</span><span class="v" id="d-place">Sted kommer<small id="d-address">Adresse legges inn</small></span></span>
+      </li>
+      <li>
+        <span class="ic" aria-hidden="true">👗</span>
+        <span><span class="k">Antrekk</span><span class="v" id="d-dress">Pent / mørk dress</span></span>
+      </li>
+      <li>
+        <span class="ic" aria-hidden="true">💳</span>
+        <span><span class="k">Pris pr. person</span>
+          <span class="v"><span class="price-badge">kr <b id="d-price">500</b></span></span>
+        </span>
+      </li>
+      <li>
+        <span class="ic" aria-hidden="true">⏳</span>
+        <span><span class="k">Påmeldingsfrist</span><span class="v" id="d-deadline">15. november 2026</span></span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ================= PÅMELDING ================= -->
+  <section class="card" id="rsvp-card" aria-labelledby="rsvp-h">
+    <h2 id="rsvp-h">Meld deg på</h2>
+    <form id="rsvp-form" novalidate>
+      <div class="field">
+        <label for="navn">Navn <span class="req">*</span></label>
+        <input id="navn" name="navn" type="text" autocomplete="name" required placeholder="Ola Nordmann" />
+      </div>
+
+      <div class="field">
+        <label for="epost">E-post <span class="req">*</span></label>
+        <input id="epost" name="epost" type="email" inputmode="email" autocomplete="email" required placeholder="ola@example.com" />
+      </div>
+
+      <div class="field">
+        <label for="telefon">Mobil <span class="hint">(brukes for å matche Vipps-betaling)</span> <span class="req">*</span></label>
+        <input id="telefon" name="telefon" type="tel" inputmode="tel" autocomplete="tel" required placeholder="900 00 000" />
+      </div>
+
+      <div class="field">
+        <label for="antall">Antall som kommer <span class="hint">(deg + eventuell følge)</span></label>
+        <select id="antall" name="antall">
+          <option value="1">1 — bare meg</option>
+          <option value="2">2 — meg + følge</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="allergi">Allergier / matpreferanser</label>
+        <input id="allergi" name="allergi" type="text" placeholder="F.eks. vegetar, glutenfri, ingen" />
+      </div>
+
+      <div class="field">
+        <label for="kommentar">Kommentar <span class="hint">(valgfritt)</span></label>
+        <textarea id="kommentar" name="kommentar" placeholder="Noe vi bør vite?"></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary" id="submit-btn">Send påmelding</button>
+      <p class="form-note">Etter påmelding får du opp betaling med Vipps.</p>
+      <div class="msg err" id="form-msg" role="alert"></div>
+    </form>
+  </section>
+
+  <!-- ================= BETALING (vises etter innsending) ================= -->
+  <section class="card" id="pay" aria-labelledby="pay-h">
+    <div class="pay-hero">
+      <div class="check" aria-hidden="true">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      </div>
+      <h2 id="pay-h" style="margin-top:6px;">Påmelding registrert!</h2>
+      <p style="color:var(--ink-soft); margin-top:4px;">Ett steg igjen — betal for å sikre plassen din.</p>
+    </div>
+
+    <ol class="steps">
+      <li>Trykk på <b>Betal med Vipps</b>-knappen under.</li>
+      <li>Beløpet er <b>kr <span id="pay-price">500</span></b> pr. person.</li>
+      <li>Skriv <b>navnet ditt</b> som melding, så vi finner deg igjen.</li>
+    </ol>
+
+    <div class="ref-tip" id="ref-tip">
+      💡 Betaler du for to? Legg inn <b>kr <span id="pay-price-2">1000</span></b> og skriv begge navn.
+    </div>
+
+    <a id="vipps-btn" class="btn btn-vipps" href="#" target="_blank" rel="noopener" style="margin-top:16px;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm4.2 7.6c-.9 2.3-2.6 3.9-4.8 3.9-1.5 0-2.4-.8-3.2-2.1-.3-.5-.1-1 .4-1.3.5-.3 1-.1 1.3.4.4.7.8 1 1.5 1 1 0 1.9-.8 2.5-2.3.2-.6.8-.9 1.4-.6.5.2.8.8.5 1z"/></svg>
+      Betal med Vipps
+    </a>
+    <p class="form-note" id="vipps-fallback" style="margin-top:12px; display:none;">
+      Får du ikke opp Vipps? <a href="#" id="vipps-link-alt" style="color:var(--gold-strong);">Åpne lenken her</a>.
+    </p>
+  </section>
+
+  <footer>
+    <div class="snow">❆ ❆ ❆</div>
+    <p>Vi gleder oss til å se deg!<br/>Spørsmål? Ta kontakt med arrangøren.</p>
+  </footer>
+
+</main>
+
+<script>
+/* =========================================================================
+   ⚙️  KONFIGURASJON — fyll inn dine verdier her. Ingen koding nødvendig.
+   Se README.md for steg-for-steg oppskrift.
+   ========================================================================= */
+const CONFIG = {
+  // Pris pr. person i kroner:
+  pris: 500,
+
+  // Lenken til Vipps-boksen din (eller Vipps-betalingslenke).
+  // Hentes fra Vipps-appen: Bokser → din boks → Del → Kopier lenke.
+  // La stå tom ("") inntil du har den — knappen deaktiveres da automatisk.
+  vippsLenke: "",
+
+  // URL til Google Apps Script (Web App) som lagrer påmeldinger i regnearket ditt.
+  // Se README.md. La stå tom ("") for å teste siden uten lagring.
+  paameldingEndepunkt: "",
+
+  // Arrangementsdetaljer (valgfritt å endre her — kan også endres direkte i HTML over).
+  detaljer: {
+    dato:    "Fredag 4. desember 2026",
+    tid:     "Kl. 19:00",
+    sted:    "Sted kommer",
+    adresse: "Adresse legges inn",
+    antrekk: "Pent / mørk dress",
+    frist:   "15. november 2026"
+  }
+};
+
+/* ------------------------------------------------------------------ */
+(function () {
+  "use strict";
+
+  // Fyll inn detaljer fra CONFIG (hvis endret)
+  const d = CONFIG.detaljer;
+  document.getElementById("d-date").firstChild.textContent = d.dato;
+  document.getElementById("d-time").textContent = d.tid;
+  document.getElementById("d-place").firstChild.textContent = d.sted;
+  document.getElementById("d-address").textContent = d.adresse;
+  document.getElementById("d-dress").textContent = d.antrekk;
+  document.getElementById("d-deadline").textContent = d.frist;
+
+  // Priser
+  document.getElementById("d-price").textContent = CONFIG.pris;
+  document.getElementById("pay-price").textContent = CONFIG.pris;
+  document.getElementById("pay-price-2").textContent = CONFIG.pris * 2;
+
+  const form = document.getElementById("rsvp-form");
+  const btn = document.getElementById("submit-btn");
+  const msg = document.getElementById("form-msg");
+  const payCard = document.getElementById("pay");
+  const rsvpCard = document.getElementById("rsvp-card");
+  const vippsBtn = document.getElementById("vipps-btn");
+  const vippsLinkAlt = document.getElementById("vipps-link-alt");
+  const vippsFallback = document.getElementById("vipps-fallback");
+  const antallSel = document.getElementById("antall");
+  const refTip = document.getElementById("ref-tip");
+
+  function showErr(text) {
+    msg.textContent = text;
+    msg.classList.add("show");
+  }
+  function clearErr() { msg.classList.remove("show"); msg.textContent = ""; }
+
+  function setVippsLink() {
+    const link = (CONFIG.vippsLenke || "").trim();
+    if (link) {
+      vippsBtn.setAttribute("href", link);
+      if (vippsLinkAlt) vippsLinkAlt.setAttribute("href", link);
+      if (vippsFallback) vippsFallback.style.display = "block";
+    } else {
+      vippsBtn.setAttribute("href", "#");
+      vippsBtn.style.opacity = ".6";
+      vippsBtn.style.pointerEvents = "none";
+      vippsBtn.textContent = "Vipps-lenke ikke satt opp ennå";
+    }
+    // Vis riktig referanse-tips basert på valgt antall
+    refTip.style.display = (antallSel.value === "2") ? "block" : "none";
+  }
+  antallSel.addEventListener("change", setVippsLink);
+  setVippsLink();
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    clearErr();
+
+    // Enkel validering
+    const navn = form.navn.value.trim();
+    const epost = form.epost.value.trim();
+    const telefon = form.telefon.value.trim();
+    if (!navn || !epost || !telefon) {
+      showErr("Fyll inn navn, e-post og mobil.");
+      return;
+    }
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(epost)) {
+      showErr("Sjekk at e-postadressen er riktig.");
+      return;
+    }
+
+    const data = {
+      navn: navn,
+      epost: epost,
+      telefon: telefon,
+      antall: form.antall.value,
+      allergi: form.allergi.value.trim(),
+      kommentar: form.kommentar.value.trim(),
+      tidspunkt: new Date().toISOString()
+    };
+
+    const endpoint = (CONFIG.paameldingEndepunkt || "").trim();
+
+    btn.disabled = true;
+    btn.textContent = "Sender …";
+
+    try {
+      if (endpoint) {
+        // text/plain unngår CORS-preflight mot Google Apps Script
+        const res = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(data)
+        });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        // Apps Script svarer med { result: "ok" }
+        let out = {};
+        try { out = await res.json(); } catch (_) { /* tolerer tomt svar */ }
+        if (out.result && out.result !== "ok") throw new Error(out.message || "Ukjent feil");
+      } else {
+        // Ingen endepunkt satt opp ennå — la påmeldingen gå videre lokalt (testmodus)
+        console.info("[Testmodus] Ingen paameldingEndepunkt satt. Data:", data);
+      }
+
+      // Gå til betalingssteget
+      setVippsLink();
+      rsvpCard.style.display = "none";
+      payCard.classList.add("show");
+      payCard.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    } catch (err) {
+      console.error(err);
+      showErr("Noe gikk galt under sending. Prøv igjen, eller ta kontakt med arrangøren.");
+      btn.disabled = false;
+      btn.textContent = "Send påmelding";
+    }
+  });
+})();
+</script>
+</body>
+</html>
