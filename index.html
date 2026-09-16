@@ -750,7 +750,7 @@ const CONFIG = {
       }
     }
 
-    var bubbles = [], pops = [], t0 = performance.now(), last = t0;
+    var bubbles = [], pops = [], emitAcc = 0, t0 = performance.now(), last = t0;
 
     (function frame(t){
       var dt = Math.min((t - last) / 1000, 0.05); last = t;
@@ -787,12 +787,14 @@ const CONFIG = {
       x.fillStyle = rg2; x.fillRect(W * 0.84, levelY, W * 0.16, H);
       x.restore();
 
-      // Karbonasjon: fine bobler, vilkårlig i HELE ølet, kontinuerlig
+      // Karbonasjon: jevn, kontinuerlig strøm (ingen pulsering)
       if (phase !== "drain"){
         var span = Math.max(1, H - levelY);
-        for (var e = 0; e < 4; e++){
-          if (bubbles.length < 185 && Math.random() < 0.72)
-            bubbles.push({ x: Math.random() * W, y: levelY + span * (0.28 + 0.72 * Math.random()),
+        emitAcc += 85 * dt;                       // ~85 bobler/sek, jevnt fordelt
+        var nEmit = Math.floor(emitAcc); emitAcc -= nEmit;
+        for (var e = 0; e < nEmit; e++){
+          if (bubbles.length < 240)
+            bubbles.push({ x: Math.random() * W, y: levelY + span * (0.2 + 0.8 * Math.random()),
               r: Math.random() * 1.3 + 0.6, vy: Math.random() * 8 + 5, grow: Math.random() * 0.9 + 0.35,
               wob: Math.random() * 6.28, wobS: Math.random() * 1.8 + 0.7 });
         }
