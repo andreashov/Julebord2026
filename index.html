@@ -711,76 +711,146 @@ const CONFIG = {
     var DPR = Math.min(window.devicePixelRatio || 1, 2);
     var W = innerWidth, H = innerHeight;
     c.width = W * DPR; c.height = H * DPR; c.style.display = "block";
-    x.setTransform(DPR, 0, 0, DPR, 0, 0);
 
-    var FILL = 2600, HOLD = 1600, DRAIN = 1200, TOP = 0.94;
-    var bubbles = [], t0 = performance.now(), last = t0, streamX = W * (0.4 + Math.random() * 0.2);
-
-    function surfaceY(baseY, xx, ph){
-      return baseY + Math.sin((xx / 140) + ph) * 4 + Math.sin((xx / 57) - ph * 1.3) * 2;
+    // Forhåndstegn sprites (kremboble + karbonasjonsboble) for jevn ytelse
+    function makeSprite(size, draw){
+      var cn = document.createElement("canvas"); cn.width = cn.height = size * DPR;
+      var g = cn.getContext("2d"); g.setTransform(DPR, 0, 0, DPR, 0, 0);
+      g.translate(size / 2, size / 2); draw(g, size / 2); return cn;
     }
+    var foamSprite = makeSprite(46, function(g, r){
+      var rg = g.createRadialGradient(-r * 0.32, -r * 0.36, r * 0.1, 0, 0, r);
+      rg.addColorStop(0, "rgba(255,255,253,0.98)");
+      rg.addColorStop(0.55, "rgba(249,243,227,0.96)");
+      rg.addColorStop(1, "rgba(214,200,168,0.35)");
+      g.fillStyle = rg; g.beginPath(); g.arc(0, 0, r, 0, 6.283); g.fill();
+      g.fillStyle = "rgba(255,255,255,0.9)"; g.beginPath(); g.arc(-r * 0.3, -r * 0.34, r * 0.2, 0, 6.283); g.fill();
+    });
+    var bubbleSprite = makeSprite(34, function(g, r){
+      g.fillStyle = "rgba(255,235,185,0.3)"; g.beginPath(); g.arc(0, 0, r, 0, 6.283); g.fill();
+      g.strokeStyle = "rgba(255,246,214,0.55)"; g.lineWidth = r * 0.16; g.beginPath(); g.arc(0, 0, r * 0.82, 0, 6.283); g.stroke();
+      g.fillStyle = "rgba(255,255,255,0.8)"; g.beginPath(); g.arc(-r * 0.32, -r * 0.32, r * 0.2, 0, 6.283); g.fill();
+    });
+    function blit(spr, cx, cy, sz){ x.drawImage(spr, cx - sz / 2, cy - sz / 2, sz, sz); }
+
+    // Menisk + bølge på overflaten
+    function surfaceY(baseY, xx, ph){
+      var wave = Math.sin((xx / 145) + ph) * 3.4 + Math.sin((xx / 54) - ph * 1.25) * 1.7;
+      var men = Math.pow(Math.abs((xx / W) * 2 - 1), 2.2) * 7; // løftes ved kantene
+      return baseY + wave - men;
+    }
+
+    // Faste karbonasjons-strømmer (bobler stiger i kolonner)
+    var streams = [];
+    for (var sN = 0; sN < 7; sN++) streams.push({ x: (sN + 0.5) / 7 * W + (Math.random() * 30 - 15), t: Math.random() });
+    // Vedvarende skumbobler som rir på overflaten (ingen flimring)
+    var foam = [], fN = Math.max(26, Math.round(W / 7));
+    for (var f = 0; f < fN; f++) foam.push({ x: Math.random() * W, sz: Math.random() * 12 + 5, off: Math.random() * 10, sp: Math.random() * 6.28 });
+
+    var bubbles = [], t0 = performance.now(), last = t0, streamX = W * (0.42 + Math.random() * 0.16);
 
     (function frame(t){
       var dt = Math.min((t - last) / 1000, 0.05); last = t;
-      var el = t - t0, lvl, phase;
-      if (el < FILL){ var p = el / FILL; lvl = TOP * (1 - Math.pow(1 - p, 2)); phase = "fill"; }
-      else if (el < FILL + HOLD){ lvl = TOP; phase = "hold"; }
-      else if (el < FILL + HOLD + DRAIN){ lvl = TOP * (1 - (el - FILL - HOLD) / DRAIN); phase = "drain"; }
+      var el = t - t0, lvl, phase, headGrow;
+      if (el < FILL){ var p = el / FILL; lvl = TOP * (1 - Math.pow(1 - p, 2)); phase = "fill"; headGrow = p; }
+      else if (el < FILL + HOLD){ lvl = TOP; phase = "hold"; headGrow = 1 - (el - FILL) / HOLD * 0.4; }
+      else if (el < FILL + HOLD + DRAIN){ lvl = TOP * (1 - (el - FILL - HOLD) / DRAIN); phase = "drain"; headGrow = 0.5; }
       else { x.clearRect(0, 0, W, H); c.style.display = "none"; beerActive = false; return; }
 
-      var levelY = H - lvl * H, ph = el / 380;
+      var levelY = H - lvl * H, ph = el / 360;
+      x.setTransform(DPR, 0, 0, DPR, 0, 0);
       x.clearRect(0, 0, W, H);
 
-      // pour-stråle ovenfra mens den fylles
+      // Pour-stråle (tapered, halvgjennomsiktig med lys kjerne)
       if (phase === "fill"){
-        x.strokeStyle = "rgba(226,158,38,0.5)"; x.lineWidth = 9; x.lineCap = "round";
-        x.beginPath();
-        for (var sy = 0; sy < levelY; sy += 6){
-          var wob = Math.sin(sy / 20 + el / 110) * 3;
-          if (sy === 0) x.moveTo(streamX + wob, sy); else x.lineTo(streamX + wob, sy);
+        var impactY = surfaceY(levelY, streamX, ph);
+        for (var pass = 0; pass < 2; pass++){
+          x.strokeStyle = pass === 0 ? "rgba(210,140,30,0.5)" : "rgba(255,224,150,0.45)";
+          x.lineWidth = pass === 0 ? 10 : 4; x.lineCap = "round";
+          x.beginPath();
+          for (var sy = 0; sy <= impactY; sy += 6){
+            var wob = Math.sin(sy / 18 + el / 100) * 3 * (sy / (impactY + 1));
+            if (sy === 0) x.moveTo(streamX + wob, sy); else x.lineTo(streamX + wob, sy);
+          }
+          x.stroke();
         }
-        x.stroke();
       }
 
-      // øl-kropp med bølgende overflate
-      x.beginPath(); x.moveTo(0, H); x.lineTo(0, levelY);
-      for (var xx = 0; xx <= W; xx += 8) x.lineTo(xx, surfaceY(levelY, xx, ph));
+      // Øl-kropp med bølgende/menisk overflate
+      x.beginPath(); x.moveTo(0, H); x.lineTo(0, surfaceY(levelY, 0, ph));
+      for (var xx = 0; xx <= W; xx += 7) x.lineTo(xx, surfaceY(levelY, xx, ph));
       x.lineTo(W, H); x.closePath();
-      var g = x.createLinearGradient(0, levelY, 0, H);
-      g.addColorStop(0, "rgba(230,162,40,0.42)"); g.addColorStop(1, "rgba(175,105,16,0.5)");
+      var g = x.createLinearGradient(0, levelY - 10, 0, H);
+      g.addColorStop(0, "rgba(240,176,54,0.44)");
+      g.addColorStop(0.5, "rgba(214,140,32,0.5)");
+      g.addColorStop(1, "rgba(150,88,12,0.58)");
       x.fillStyle = g; x.fill();
 
-      // bobler
-      if (phase !== "drain" && bubbles.length < 75){
-        var toAdd = 1 + (Math.random() < 0.6 ? 1 : 0);
-        for (var a = 0; a < toAdd; a++) bubbles.push({
-          x: Math.random() * W, y: H - Math.random() * 6, r: Math.random() * 3 + 1.2,
-          vy: Math.random() * 55 + 35, wob: Math.random() * 6.28, wobS: Math.random() * 3 + 1
-        });
+      // Glass-refleks langs venstre/høyre kant
+      x.save(); x.clip();
+      var lg = x.createLinearGradient(0, 0, W * 0.16, 0);
+      lg.addColorStop(0, "rgba(255,255,255,0.10)"); lg.addColorStop(1, "rgba(255,255,255,0)");
+      x.fillStyle = lg; x.fillRect(0, levelY, W * 0.16, H);
+      var rg2 = x.createLinearGradient(W, 0, W * 0.84, 0);
+      rg2.addColorStop(0, "rgba(255,255,255,0.07)"); rg2.addColorStop(1, "rgba(255,255,255,0)");
+      x.fillStyle = rg2; x.fillRect(W * 0.84, levelY, W * 0.16, H);
+      x.restore();
+
+      // Karbonasjon: strømmer + litt tilfeldig
+      if (phase !== "drain"){
+        for (var s = 0; s < streams.length; s++){
+          streams[s].t -= dt;
+          if (streams[s].t <= 0){
+            streams[s].t = 0.12 + Math.random() * 0.22;
+            bubbles.push({ x: streams[s].x + (Math.random() * 8 - 4), y: H - Math.random() * 8,
+              r: Math.random() * 1.6 + 1, vy: Math.random() * 40 + 40, grow: Math.random() * 3 + 1.5,
+              wob: Math.random() * 6.28, wobS: Math.random() * 2.5 + 1 });
+          }
+        }
+        if (bubbles.length < 120 && Math.random() < 0.5)
+          bubbles.push({ x: Math.random() * W, y: H - Math.random() * 8, r: Math.random() * 1.6 + 0.8,
+            vy: Math.random() * 35 + 30, grow: Math.random() * 2 + 1, wob: Math.random() * 6.28, wobS: Math.random() * 2.5 + 1 });
       }
       for (var i = bubbles.length - 1; i >= 0; i--){
         var b = bubbles[i];
-        b.y -= b.vy * dt; b.wob += b.wobS * dt; b.x += Math.sin(b.wob) * 0.5;
-        if (b.y < levelY + 5){ bubbles.splice(i, 1); continue; }
-        x.beginPath(); x.arc(b.x, b.y, b.r, 0, 6.283); x.fillStyle = "rgba(255,240,200,0.45)"; x.fill();
-        x.beginPath(); x.arc(b.x - b.r * 0.3, b.y - b.r * 0.3, b.r * 0.42, 0, 6.283);
-        x.fillStyle = "rgba(255,255,255,0.55)"; x.fill();
+        b.vy += 24 * dt; b.r += b.grow * dt; b.y -= b.vy * dt; b.wob += b.wobS * dt; b.x += Math.sin(b.wob) * 0.6;
+        var surf = surfaceY(levelY, b.x, ph);
+        if (b.y < surf + 3){ bubbles.splice(i, 1); continue; }
+        blit(bubbleSprite, b.x, b.y, b.r * 2.4);
       }
 
-      // skum ved overflaten
-      var foamH = phase === "fill" ? 13 : 22;
-      x.beginPath(); x.moveTo(0, levelY + foamH);
-      for (var xf = 0; xf <= W; xf += 8) x.lineTo(xf, surfaceY(levelY, xf, ph));
-      x.lineTo(W, levelY + foamH); x.closePath();
-      x.fillStyle = "rgba(255,250,236,0.92)"; x.fill();
-      for (var fx = 0; fx <= W; fx += 9){
-        var by = surfaceY(levelY, fx, ph), rr = 3 + (Math.sin(fx * 1.3) + 1) * 2.2;
-        x.beginPath(); x.arc(fx, by, rr, 0, 6.283); x.fillStyle = "rgba(255,252,243,0.95)"; x.fill();
+      // Overflate-refleks (tynn lys stripe rett under skummet)
+      x.strokeStyle = "rgba(255,246,220,0.5)"; x.lineWidth = 1.5; x.beginPath();
+      for (var xs = 0; xs <= W; xs += 7){ var ys = surfaceY(levelY, xs, ph) + 3; if (xs === 0) x.moveTo(xs, ys); else x.lineTo(xs, ys); }
+      x.stroke();
+
+      // Kremet skum (lag av myke bobler som rir på overflaten)
+      var headH = (phase === "fill" ? 16 : 26) * (0.6 + 0.4 * headGrow);
+      // mykt kremet skum-bånd langs overflaten
+      x.beginPath();
+      for (var xf2 = 0; xf2 <= W; xf2 += 7){ if (xf2 === 0) x.moveTo(0, surfaceY(levelY, 0, ph) + headH); else x.lineTo(xf2, surfaceY(levelY, xf2, ph) + headH); }
+      for (var xb = W; xb >= 0; xb -= 7) x.lineTo(xb, surfaceY(levelY, xb, ph) - 3);
+      x.closePath(); x.fillStyle = "rgba(252,246,231,0.72)"; x.fill();
+      // skumbobler
+      for (var k = 0; k < foam.length; k++){
+        var fb = foam[k]; fb.sp += dt * 1.2;
+        var fyb = surfaceY(levelY, fb.x, ph) - fb.off * (headH / 26) + Math.sin(fb.sp) * 1.2;
+        blit(foamSprite, fb.x, fyb, fb.sz * (0.7 + 0.5 * headGrow));
+      }
+
+      // Skvett/skumsprut der strålen treffer
+      if (phase === "fill"){
+        var iy = surfaceY(levelY, streamX, ph);
+        for (var q = 0; q < 5; q++){
+          var ang = Math.PI + (Math.random() - 0.5) * 2.2, rad = Math.random() * 18 + 4;
+          blit(foamSprite, streamX + Math.cos(ang) * rad, iy - Math.abs(Math.sin(ang)) * rad * 0.7, Math.random() * 8 + 5);
+        }
       }
 
       requestAnimationFrame(frame);
     })(t0);
   }
+  var FILL = 2700, HOLD = 1700, DRAIN = 1300, TOP = 0.95;
   var emblemEl = document.querySelector(".emblem");
   if (emblemEl) emblemEl.addEventListener("click", pourBeer);
 
