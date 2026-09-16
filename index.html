@@ -77,6 +77,8 @@ body{
 .grain{position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:.03;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
 #snow{position:fixed; inset:0; z-index:-1; pointer-events:none;}
+#beer{position:fixed; inset:0; z-index:55; pointer-events:none; display:none;}
+.emblem{cursor:pointer;}
 
 /* Tindrende stjernehimmel (bak alt) */
 .star{position:absolute; border-radius:50%; background:#fff; opacity:.5;
@@ -403,6 +405,7 @@ footer .sn{color:var(--gold); letter-spacing:.45em;}
 <div class="grain" aria-hidden="true"></div>
 <canvas id="snow" aria-hidden="true"></canvas>
 <canvas id="burst" aria-hidden="true"></canvas>
+<canvas id="beer" aria-hidden="true"></canvas>
 <div class="lights" id="lights" aria-hidden="true"></div>
 
 <main class="app">
@@ -563,6 +566,7 @@ const CONFIG = {
   function haptic(p){ try{ if(navigator.vibrate) navigator.vibrate(p); }catch(_){} }
   var isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)
     || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  var beerActive = false;
   var d = CONFIG.detaljer;
   document.getElementById("v-date").firstChild.textContent = d.dato;
   document.getElementById("v-time").textContent = d.tid;
@@ -696,6 +700,89 @@ const CONFIG = {
       else { ctx.clearRect(0, 0, W, H); c.style.display = "none"; }
     })(t0);
   }
+
+  /* ---------- Øl-fylling (easter egg: trykk på stjernen) ---------- */
+  function pourBeer(){
+    var c = document.getElementById("beer");
+    if (!c || beerActive) return;
+    beerActive = true;
+    haptic(12);
+    var x = c.getContext("2d");
+    var DPR = Math.min(window.devicePixelRatio || 1, 2);
+    var W = innerWidth, H = innerHeight;
+    c.width = W * DPR; c.height = H * DPR; c.style.display = "block";
+    x.setTransform(DPR, 0, 0, DPR, 0, 0);
+
+    var FILL = 2600, HOLD = 1600, DRAIN = 1200, TOP = 0.94;
+    var bubbles = [], t0 = performance.now(), last = t0, streamX = W * (0.4 + Math.random() * 0.2);
+
+    function surfaceY(baseY, xx, ph){
+      return baseY + Math.sin((xx / 140) + ph) * 4 + Math.sin((xx / 57) - ph * 1.3) * 2;
+    }
+
+    (function frame(t){
+      var dt = Math.min((t - last) / 1000, 0.05); last = t;
+      var el = t - t0, lvl, phase;
+      if (el < FILL){ var p = el / FILL; lvl = TOP * (1 - Math.pow(1 - p, 2)); phase = "fill"; }
+      else if (el < FILL + HOLD){ lvl = TOP; phase = "hold"; }
+      else if (el < FILL + HOLD + DRAIN){ lvl = TOP * (1 - (el - FILL - HOLD) / DRAIN); phase = "drain"; }
+      else { x.clearRect(0, 0, W, H); c.style.display = "none"; beerActive = false; return; }
+
+      var levelY = H - lvl * H, ph = el / 380;
+      x.clearRect(0, 0, W, H);
+
+      // pour-stråle ovenfra mens den fylles
+      if (phase === "fill"){
+        x.strokeStyle = "rgba(226,158,38,0.5)"; x.lineWidth = 9; x.lineCap = "round";
+        x.beginPath();
+        for (var sy = 0; sy < levelY; sy += 6){
+          var wob = Math.sin(sy / 20 + el / 110) * 3;
+          if (sy === 0) x.moveTo(streamX + wob, sy); else x.lineTo(streamX + wob, sy);
+        }
+        x.stroke();
+      }
+
+      // øl-kropp med bølgende overflate
+      x.beginPath(); x.moveTo(0, H); x.lineTo(0, levelY);
+      for (var xx = 0; xx <= W; xx += 8) x.lineTo(xx, surfaceY(levelY, xx, ph));
+      x.lineTo(W, H); x.closePath();
+      var g = x.createLinearGradient(0, levelY, 0, H);
+      g.addColorStop(0, "rgba(230,162,40,0.42)"); g.addColorStop(1, "rgba(175,105,16,0.5)");
+      x.fillStyle = g; x.fill();
+
+      // bobler
+      if (phase !== "drain" && bubbles.length < 75){
+        var toAdd = 1 + (Math.random() < 0.6 ? 1 : 0);
+        for (var a = 0; a < toAdd; a++) bubbles.push({
+          x: Math.random() * W, y: H - Math.random() * 6, r: Math.random() * 3 + 1.2,
+          vy: Math.random() * 55 + 35, wob: Math.random() * 6.28, wobS: Math.random() * 3 + 1
+        });
+      }
+      for (var i = bubbles.length - 1; i >= 0; i--){
+        var b = bubbles[i];
+        b.y -= b.vy * dt; b.wob += b.wobS * dt; b.x += Math.sin(b.wob) * 0.5;
+        if (b.y < levelY + 5){ bubbles.splice(i, 1); continue; }
+        x.beginPath(); x.arc(b.x, b.y, b.r, 0, 6.283); x.fillStyle = "rgba(255,240,200,0.45)"; x.fill();
+        x.beginPath(); x.arc(b.x - b.r * 0.3, b.y - b.r * 0.3, b.r * 0.42, 0, 6.283);
+        x.fillStyle = "rgba(255,255,255,0.55)"; x.fill();
+      }
+
+      // skum ved overflaten
+      var foamH = phase === "fill" ? 13 : 22;
+      x.beginPath(); x.moveTo(0, levelY + foamH);
+      for (var xf = 0; xf <= W; xf += 8) x.lineTo(xf, surfaceY(levelY, xf, ph));
+      x.lineTo(W, levelY + foamH); x.closePath();
+      x.fillStyle = "rgba(255,250,236,0.92)"; x.fill();
+      for (var fx = 0; fx <= W; fx += 9){
+        var by = surfaceY(levelY, fx, ph), rr = 3 + (Math.sin(fx * 1.3) + 1) * 2.2;
+        x.beginPath(); x.arc(fx, by, rr, 0, 6.283); x.fillStyle = "rgba(255,252,243,0.95)"; x.fill();
+      }
+
+      requestAnimationFrame(frame);
+    })(t0);
+  }
+  var emblemEl = document.querySelector(".emblem");
+  if (emblemEl) emblemEl.addEventListener("click", pourBeer);
 
   document.getElementById("to-form").addEventListener("click", function(){ haptic(8); snowfall(); goTo(1); });
   Array.prototype.forEach.call(document.querySelectorAll("[data-back]"), function(b){
