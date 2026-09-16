@@ -195,6 +195,14 @@ body{
   box-shadow:0 10px 26px -10px rgba(255,91,36,.75), inset 0 1px 0 rgba(255,255,255,.4);}
 .btn:disabled{opacity:.55; cursor:not-allowed; box-shadow:none;}
 .cta-wrap{margin-top:16px;}
+.mascot{margin:14px auto 0; text-align:center; pointer-events:none;}
+.mascot img{width:min(74%, 320px); height:auto; display:inline-block;
+  filter:drop-shadow(0 16px 24px rgba(0,0,0,.55));
+  transform-origin:50% 100%; animation:bob 4.6s ease-in-out infinite;}
+.mascot-tag{display:block; margin-top:6px; font-family:var(--font-display); font-style:italic;
+  color:var(--gold-2); font-size:1.02rem; letter-spacing:.2px; opacity:.92;}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-1.2deg);}50%{transform:translateY(-9px) rotate(1.2deg);}}
+@media (prefers-reduced-motion:reduce){.mascot img{animation:none;}}
 .cta-sub{text-align:center; color:var(--ink-dim); font-size:.82rem; margin:12px 0 0;}
 
 /* =========================================================================
@@ -424,6 +432,11 @@ footer .sn{color:var(--gold); letter-spacing:.45em;}
         <button class="btn btn-gold" id="to-form" type="button">Til påmelding
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </button>
+      </div>
+
+      <div class="mascot" aria-hidden="true">
+        <img src="assets/nisseskjelett.png" alt="" loading="lazy" />
+        <span class="mascot-tag">Skål – vi sees på julebordet! 🍺</span>
       </div>
     </section>
 
