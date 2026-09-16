@@ -154,9 +154,12 @@ body{
 .rows{list-style:none; margin:0; padding:0;}
 .rows li{display:flex; gap:15px; align-items:flex-start; padding:15px 0; border-bottom:1px solid rgba(255,255,255,.07);}
 .rows li:last-child{border-bottom:0;}
-.rows .ic{flex:0 0 auto; width:42px; height:42px; display:grid; place-items:center; font-size:1.15rem; margin-top:2px;
-  border-radius:13px; background:var(--glass-bg-2); border:1px solid var(--glass-brd);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.14);}
+.rows .ic{flex:0 0 auto; width:42px; height:42px; display:grid; place-items:center; margin-top:2px;
+  color:var(--gold-2);
+  border-radius:13px; background:linear-gradient(180deg, rgba(230,197,132,.14), rgba(230,197,132,.05));
+  border:1px solid rgba(230,197,132,.28);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18), 0 3px 10px -6px rgba(230,197,132,.5);}
+.rows .ic svg{width:23px; height:23px; display:block;}
 .rows .txt{min-width:0;}
 .rows .k{display:block; font-size:.66rem; letter-spacing:.18em; text-transform:uppercase; color:var(--gold); margin-bottom:3px;}
 .rows .v{display:block; font-size:1.08rem; font-weight:600; color:var(--ink); letter-spacing:.2px;}
@@ -337,10 +340,47 @@ footer .sn{color:var(--gold); letter-spacing:.45em;}
 
       <div class="glass pad info">
         <ul class="rows">
-          <li><span class="ic">📅</span><span class="txt"><span class="k">Når</span><span class="v" id="v-date">Fredag 20. november 2026<small id="v-time">Kl. 19:00</small></span></span></li>
-          <li><span class="ic">📍</span><span class="txt"><span class="k">Hvor</span><span class="v" id="v-place">Fredrikstad Skytterhus<small id="v-address">Ilaveien 134, 1605 Fredrikstad</small></span></span></li>
-          <li><span class="ic">💳</span><span class="txt"><span class="k">Pris pr. person</span><span class="v"><span class="price-pill"><span>kr</span><b id="v-price">500</b></span></span></span></li>
-          <li><span class="ic">⏳</span><span class="txt"><span class="k">Påmeldingsfrist</span><span class="v" id="v-deadline">13. november 2026</span></span></li>
+          <li>
+            <span class="ic" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3.2" y="4.8" width="17.6" height="15.5" rx="3.2"/>
+                <path d="M3.2 9.3h17.6"/><path d="M8 2.8v3.3M16 2.8v3.3"/>
+                <circle cx="8" cy="13.2" r="1" fill="currentColor" stroke="none"/>
+                <circle cx="12" cy="13.2" r="1" fill="currentColor" stroke="none"/>
+                <circle cx="16" cy="13.2" r="1" fill="currentColor" stroke="none"/>
+              </svg>
+            </span>
+            <span class="txt"><span class="k">Når</span><span class="v" id="v-date">Fredag 20. november 2026<small id="v-time">Kl. 19:00</small></span></span>
+          </li>
+          <li>
+            <span class="ic" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 21.5c4.5-4.3 7-7.7 7-11.1a7 7 0 1 0-14 0c0 3.4 2.5 6.8 7 11.1z"/>
+                <circle cx="12" cy="10.2" r="2.6"/>
+              </svg>
+            </span>
+            <span class="txt"><span class="k">Hvor</span><span class="v" id="v-place">Fredrikstad Skytterhus<small id="v-address">Ilaveien 134, 1605 Fredrikstad</small></span></span>
+          </li>
+          <li>
+            <span class="ic" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <circle cx="12" cy="12" r="8.4"/>
+                <circle cx="12" cy="12" r="6" opacity=".45"/>
+                <text x="12" y="15.3" text-anchor="middle" font-family="-apple-system, system-ui, sans-serif" font-size="8" font-weight="700" fill="currentColor" stroke="none">kr</text>
+              </svg>
+            </span>
+            <span class="txt"><span class="k">Pris pr. person</span><span class="v"><span class="price-pill"><span>kr</span><b id="v-price">500</b></span></span></span>
+          </li>
+          <li>
+            <span class="ic" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 3h12M6 21h12"/>
+                <path d="M8 3v3.2l4 4 4-4V3"/>
+                <path d="M8 21v-3.2l4-4 4 4V21"/>
+              </svg>
+            </span>
+            <span class="txt"><span class="k">Påmeldingsfrist</span><span class="v" id="v-deadline">13. november 2026</span></span>
+          </li>
         </ul>
       </div>
 
