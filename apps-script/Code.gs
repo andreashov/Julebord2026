@@ -53,8 +53,12 @@ function doPost(e) {
       "'" + (data.telefon || ''),   // apostrof bevarer ledende nuller i telefonnr.
       data.mat || '',
       data.kommentar || '',
-      ''                            // 'Betalt' — kryss av manuelt når Vipps er mottatt
+      false                         // 'Betalt' — avkrysningsboks (kryss av når Vipps er mottatt)
     ]);
+
+    // Gjør 'Betalt'-cellen i den nye raden til en avkrysningsboks
+    var betaltCol = HEADERS.indexOf('Betalt') + 1;
+    sheet.getRange(sheet.getLastRow(), betaltCol).insertCheckboxes();
 
     if (NOTIFY_EMAIL) {
       sendNotification(data, naar);
