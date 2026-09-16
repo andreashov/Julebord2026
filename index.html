@@ -357,7 +357,7 @@ const CONFIG = {
   vippsLenke: "https://qr.vipps.no/box/6cde2ed7-077d-4198-adc7-372523cb6302/pay-in",
 
   // URL til Google Apps Script (Web App). La stå tom ("") for å teste uten lagring.
-  paameldingEndepunkt: "",
+  paameldingEndepunkt: "https://script.google.com/macros/s/AKfycbz3w_I0LlRIGMHkqVKR7rxzJkIgFDYhqyzLdETPZcewj2sFEI0La3m_vERMCRgqJx96uQ/exec",
 
   detaljer: {
     dato:    "Fredag 20. november 2026",
@@ -449,14 +449,14 @@ const CONFIG = {
 
     try {
       if (endpoint){
-        var res = await fetch(endpoint, {
+        // Apps Script gir et ugjennomsiktig svar på tvers av domener (no-cors).
+        // POST-en utføres server-side og raden lagres selv om vi ikke kan lese svaret.
+        await fetch(endpoint, {
           method: "POST",
+          mode: "no-cors",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify(data)
         });
-        if (!res.ok) throw new Error("HTTP " + res.status);
-        var out = {}; try { out = await res.json(); } catch(_){}
-        if (out.result && out.result !== "ok") throw new Error(out.message || "Ukjent feil");
       } else {
         console.info("[Testmodus] Ingen paameldingEndepunkt satt. Data:", data);
       }
