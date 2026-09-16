@@ -566,7 +566,7 @@ const CONFIG = {
   function haptic(p){ try{ if(navigator.vibrate) navigator.vibrate(p); }catch(_){} }
   var isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)
     || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-  var beerActive = false;
+  var beerActive = false, beerDrainAt = -1, beerDrainStartLvl = 0, beerLvlNow = 0;
   var d = CONFIG.detaljer;
   document.getElementById("v-date").firstChild.textContent = d.dato;
   document.getElementById("v-time").textContent = d.tid;
@@ -752,29 +752,17 @@ const CONFIG = {
     (function frame(t){
       var dt = Math.min((t - last) / 1000, 0.05); last = t;
       var el = t - t0, lvl, phase, headGrow;
-      if (el < FILL){ var p = el / FILL; lvl = TOP * (1 - Math.pow(1 - p, 2)); phase = "fill"; headGrow = p; }
-      else if (el < FILL + HOLD){ lvl = TOP; phase = "hold"; headGrow = 1 - (el - FILL) / HOLD * 0.4; }
-      else if (el < FILL + HOLD + DRAIN){ lvl = TOP * (1 - (el - FILL - HOLD) / DRAIN); phase = "drain"; headGrow = 0.5; }
-      else { x.clearRect(0, 0, W, H); c.style.display = "none"; beerActive = false; return; }
+      if (beerDrainAt >= 0){
+        var dp = (t - beerDrainAt) / DRAIN;
+        if (dp >= 1){ x.clearRect(0, 0, W, H); c.style.display = "none"; beerActive = false; beerDrainAt = -1; return; }
+        lvl = beerDrainStartLvl * (1 - dp); phase = "drain"; headGrow = 0.5;
+      } else if (el < FILL){ var p = el / FILL; lvl = TOP * (1 - Math.pow(1 - p, 2)); phase = "fill"; headGrow = p; }
+      else { lvl = TOP; phase = "stay"; headGrow = 0.9; }
+      beerLvlNow = lvl;
 
       var levelY = H - lvl * H, ph = el / 360;
       x.setTransform(DPR, 0, 0, DPR, 0, 0);
       x.clearRect(0, 0, W, H);
-
-      // Pour-stråle (tapered, halvgjennomsiktig med lys kjerne)
-      if (phase === "fill"){
-        var impactY = surfaceY(levelY, streamX, ph);
-        for (var pass = 0; pass < 2; pass++){
-          x.strokeStyle = pass === 0 ? "rgba(210,140,30,0.5)" : "rgba(255,224,150,0.45)";
-          x.lineWidth = pass === 0 ? 10 : 4; x.lineCap = "round";
-          x.beginPath();
-          for (var sy = 0; sy <= impactY; sy += 6){
-            var wob = Math.sin(sy / 18 + el / 100) * 3 * (sy / (impactY + 1));
-            if (sy === 0) x.moveTo(streamX + wob, sy); else x.lineTo(streamX + wob, sy);
-          }
-          x.stroke();
-        }
-      }
 
       // Øl-kropp med bølgende/menisk overflate
       x.beginPath(); x.moveTo(0, H); x.lineTo(0, surfaceY(levelY, 0, ph));
@@ -838,21 +826,15 @@ const CONFIG = {
         blit(foamSprite, fb.x, fyb, fb.sz * (0.7 + 0.5 * headGrow));
       }
 
-      // Skvett/skumsprut der strålen treffer
-      if (phase === "fill"){
-        var iy = surfaceY(levelY, streamX, ph);
-        for (var q = 0; q < 5; q++){
-          var ang = Math.PI + (Math.random() - 0.5) * 2.2, rad = Math.random() * 18 + 4;
-          blit(foamSprite, streamX + Math.cos(ang) * rad, iy - Math.abs(Math.sin(ang)) * rad * 0.7, Math.random() * 8 + 5);
-        }
-      }
-
       requestAnimationFrame(frame);
     })(t0);
   }
-  var FILL = 2700, HOLD = 1700, DRAIN = 1300, TOP = 0.95;
+  var FILL = 2700, DRAIN = 1300, TOP = 0.95;
   var emblemEl = document.querySelector(".emblem");
-  if (emblemEl) emblemEl.addEventListener("click", pourBeer);
+  if (emblemEl) emblemEl.addEventListener("click", function(){
+    if (!beerActive){ pourBeer(); }
+    else if (beerDrainAt < 0){ beerDrainStartLvl = beerLvlNow; beerDrainAt = performance.now(); haptic(8); }
+  });
 
   document.getElementById("to-form").addEventListener("click", function(){ haptic(8); snowfall(); goTo(1); });
   Array.prototype.forEach.call(document.querySelectorAll("[data-back]"), function(b){
