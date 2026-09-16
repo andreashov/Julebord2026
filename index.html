@@ -150,6 +150,7 @@ body{
 .about{color:var(--ink-soft); font-size:1rem; line-height:1.6; margin:2px 0 16px;
   padding-bottom:18px; border-bottom:1px solid rgba(255,255,255,.07);}
 .form-h{font-family:var(--font-display); font-size:1.65rem; font-weight:600; margin:2px 0 4px; letter-spacing:.3px;}
+.form-h--screen{font-size:2rem; margin:4px 6px 18px;}
 .form-sub{color:var(--ink-soft); font-size:.92rem; margin:0 0 20px;}
 .rows{list-style:none; margin:0; padding:0;}
 .rows li{display:flex; gap:15px; align-items:flex-start; padding:15px 0; border-bottom:1px solid rgba(255,255,255,.07);}
@@ -275,14 +276,38 @@ footer .sn{color:var(--gold); letter-spacing:.45em;}
 #screen-0 .info{animation:riseIn .7s .32s var(--ease) both;}
 #screen-0 .cta-wrap{animation:riseIn .7s .40s var(--ease) both;}
 
+/* ---- Apple-inspirerte grupperte lister (skjema) ---- */
+.gsection-h{font-size:.7rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--gold); margin:2px 6px 8px; }
+.glist{border-radius:20px; padding:0; margin-bottom:18px;}
+.glist::after{display:none;} /* ingen roterende glødkant på listene (renere + lettere) */
+.glist .grow{position:relative; display:flex; align-items:center; gap:12px;
+  min-height:54px; padding:8px 18px; margin:0; cursor:text;}
+.glist .grow--select{cursor:pointer;}
+.glist .grow--between{cursor:default; justify-content:space-between;}
+.glist .grow--stack{align-items:stretch; padding:12px 16px;}
+/* hårfin skillelinje mellom rader (inset som i iOS) */
+.glist .grow + .grow::before{content:""; position:absolute; top:0; left:18px; right:0; height:1px;
+  background:rgba(255,255,255,.09);}
+.glist .grow:focus-within{background:rgba(230,197,132,.06);}
+.gl{flex:0 0 auto; min-width:88px; color:var(--gold); font-weight:600; font-size:.96rem; letter-spacing:.2px;}
+.gin{flex:1 1 auto; width:100%; min-width:0; background:transparent; border:0; box-shadow:none; border-radius:0;
+  outline:0; color:var(--ink); font-family:inherit; font-size:16px; letter-spacing:.2px; padding:8px 0; text-align:left;}
+.gin:focus{background:transparent; box-shadow:none; border:0;}
+.gin::placeholder{color:#7c8579;}
+.gsel{padding-right:24px; cursor:pointer;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='none' stroke='%23e6c584' stroke-width='2.2'><path d='M4 7l5 5 5-5'/></svg>");
+  background-repeat:no-repeat; background-position:right 0 center;}
+.gta{min-height:92px; resize:vertical; line-height:1.55; padding:2px 0;}
+.glist--pay .pn-amount{margin-left:auto;}
+
 /* Gyldig-felt: grønn ✓ dukker opp med en liten «pop» */
-.field.ok input{
-  border-color:rgba(111,214,160,.55);
+.grow.ok .gin{
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%236fd6a0' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M20 6L9 17l-5-5'/></svg>");
-  background-repeat:no-repeat; background-position:right 14px center; padding-right:46px;
+  background-repeat:no-repeat; background-position:right 2px center; padding-right:28px;
   animation:okpop .35s var(--ease);
 }
-@keyframes okpop{0%{transform:scale(.997);}45%{transform:scale(1.015);}100%{transform:scale(1);}}
+@keyframes okpop{0%{transform:scale(.997);}45%{transform:scale(1.012);}100%{transform:scale(1);}}
 
 /* Vipps-knapp: rolig pulserende glød som trekker blikket */
 #submit-btn{animation:vpulse 2.4s ease-in-out infinite;}
@@ -401,47 +426,50 @@ footer .sn{color:var(--gold); letter-spacing:.45em;}
         <div class="step-dots" aria-hidden="true"><span class="dot"></span><span class="dot on"></span></div>
       </div>
 
-      <div class="glass pad">
-        <h2 class="form-h">Meld deg på</h2>
-        <form id="rsvp-form" novalidate>
-          <div class="field">
-            <label for="navn">Navn <span class="req">*</span></label>
-            <input id="navn" name="navn" type="text" autocomplete="name" required placeholder="Ola Nordmann" />
-          </div>
-          <div class="field">
-            <label for="epost">E-post <span class="req">*</span></label>
-            <input id="epost" name="epost" type="email" inputmode="email" autocomplete="email" required placeholder="ola@example.com" />
-          </div>
-          <div class="field">
-            <label for="telefon">Mobil <span class="req">*</span></label>
-            <input id="telefon" name="telefon" type="tel" inputmode="tel" autocomplete="tel" required placeholder="900 00 000" />
-          </div>
-          <div class="field">
-            <label for="mat">Mat <span class="req">*</span></label>
-            <select id="mat" name="mat">
+      <h2 class="form-h form-h--screen">Meld deg på</h2>
+      <form id="rsvp-form" novalidate>
+        <div class="glass glist">
+          <label class="grow" for="navn">
+            <span class="gl">Navn <span class="req">*</span></span>
+            <input class="gin" id="navn" name="navn" type="text" autocomplete="name" required placeholder="Ola Nordmann" />
+          </label>
+          <label class="grow" for="epost">
+            <span class="gl">E-post <span class="req">*</span></span>
+            <input class="gin" id="epost" name="epost" type="email" inputmode="email" autocomplete="email" required placeholder="ola@example.com" />
+          </label>
+          <label class="grow" for="telefon">
+            <span class="gl">Mobil <span class="req">*</span></span>
+            <input class="gin" id="telefon" name="telefon" type="tel" inputmode="tel" autocomplete="tel" required placeholder="900 00 000" />
+          </label>
+          <label class="grow grow--select" for="mat">
+            <span class="gl">Mat <span class="req">*</span></span>
+            <select class="gin gsel" id="mat" name="mat">
               <option value="Juletallerken">Juletallerken</option>
               <option value="Uten svin">Uten svin</option>
             </select>
-          </div>
-          <div class="field">
-            <label for="kommentar">Kommentar</label>
-            <textarea id="kommentar" name="kommentar" placeholder="Har du allergier? Skriv det gjerne her."></textarea>
-          </div>
+          </label>
+        </div>
 
-          <div class="pay-note">
-            <div class="pn-row">
-              <span class="pn-label">Å betale</span>
-              <span class="pn-amount">kr <span id="pay-price">500</span></span>
-            </div>
+        <div class="gsection-h">Kommentar</div>
+        <div class="glass glist">
+          <div class="grow grow--stack">
+            <textarea class="gin gta" id="kommentar" name="kommentar" placeholder="Har du allergier? Skriv det gjerne her."></textarea>
           </div>
+        </div>
 
-          <button type="submit" class="btn btn-vipps" id="submit-btn">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm4.2 7.6c-.9 2.3-2.6 3.9-4.8 3.9-1.5 0-2.4-.8-3.2-2.1-.3-.5-.1-1 .4-1.3.5-.3 1-.1 1.3.4.4.7.8 1 1.5 1 1 0 1.9-.8 2.5-2.3.2-.6.8-.9 1.4-.6.5.2.8.8.5 1z"/></svg>
-            Til betaling med Vipps
-          </button>
-          <div class="msg err" id="form-msg" role="alert"></div>
-        </form>
-      </div>
+        <div class="glass glist glist--pay">
+          <div class="grow grow--between">
+            <span class="gl">Å betale</span>
+            <span class="pn-amount">kr <span id="pay-price">500</span></span>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-vipps" id="submit-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm4.2 7.6c-.9 2.3-2.6 3.9-4.8 3.9-1.5 0-2.4-.8-3.2-2.1-.3-.5-.1-1 .4-1.3.5-.3 1-.1 1.3.4.4.7.8 1 1.5 1 1 0 1.9-.8 2.5-2.3.2-.6.8-.9 1.4-.6.5.2.8.8.5 1z"/></svg>
+          Til betaling med Vipps
+        </button>
+        <div class="msg err" id="form-msg" role="alert"></div>
+      </form>
     </section>
 
   </div>
