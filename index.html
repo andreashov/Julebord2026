@@ -740,12 +740,15 @@ const CONFIG = {
       return baseY + wave - men;
     }
 
-    // Faste karbonasjons-strømmer (bobler stiger i kolonner)
-    var streams = [];
-    for (var sN = 0; sN < 7; sN++) streams.push({ x: (sN + 0.5) / 7 * W + (Math.random() * 30 - 15), t: Math.random() });
-    // Vedvarende skumbobler som rir på overflaten (ingen flimring)
-    var foam = [], fN = Math.max(26, Math.round(W / 7));
-    for (var f = 0; f < fN; f++) foam.push({ x: Math.random() * W, sz: Math.random() * 12 + 5, off: Math.random() * 10, sp: Math.random() * 6.28 });
+    // Skumbobler i jittret rutenett over HELE bredden (ingen hull, ingen flimring)
+    var foam = [], fSp = 18;
+    for (var fc = -fSp; fc <= W + fSp; fc += fSp){
+      for (var fr = 0; fr < 3; fr++){
+        foam.push({ x: fc + (Math.random() * fSp - fSp / 2),
+          sz: (fr === 0 ? 10 : 7) + Math.random() * 6,
+          off: fr * 9 + Math.random() * 6, sp: Math.random() * 6.28, spS: Math.random() * 1.4 + 0.6 });
+      }
+    }
 
     var bubbles = [], pops = [], t0 = performance.now(), last = t0;
 
@@ -784,20 +787,14 @@ const CONFIG = {
       x.fillStyle = rg2; x.fillRect(W * 0.84, levelY, W * 0.16, H);
       x.restore();
 
-      // Karbonasjon: fine bobler i kolonner, langsomt oppover
+      // Karbonasjon: fine bobler, helt vilkårlig plassert, langsomt oppover
       if (phase !== "drain"){
-        for (var s = 0; s < streams.length; s++){
-          streams[s].t -= dt;
-          if (streams[s].t <= 0){
-            streams[s].t = 0.05 + Math.random() * 0.13;
-            bubbles.push({ x: streams[s].x + (Math.random() * 8 - 4), y: H - Math.random() * 5,
-              r: Math.random() * 1.3 + 0.7, vy: Math.random() * 9 + 7, grow: Math.random() * 1.1 + 0.4,
+        for (var e = 0; e < 3; e++){
+          if (bubbles.length < 165 && Math.random() < 0.62)
+            bubbles.push({ x: Math.random() * W, y: H - Math.random() * 6,
+              r: Math.random() * 1.3 + 0.6, vy: Math.random() * 8 + 5, grow: Math.random() * 0.9 + 0.35,
               wob: Math.random() * 6.28, wobS: Math.random() * 1.8 + 0.7 });
-          }
         }
-        if (bubbles.length < 170 && Math.random() < 0.75)
-          bubbles.push({ x: Math.random() * W, y: H - Math.random() * 5, r: Math.random() * 1.2 + 0.6,
-            vy: Math.random() * 8 + 5, grow: Math.random() * 0.9 + 0.35, wob: Math.random() * 6.28, wobS: Math.random() * 1.8 + 0.7 });
       }
       for (var i = bubbles.length - 1; i >= 0; i--){
         var b = bubbles[i];
@@ -813,16 +810,16 @@ const CONFIG = {
       x.stroke();
 
       // Kremet skum (lag av myke bobler som rir på overflaten)
-      var headH = (phase === "fill" ? 16 : 26) * (0.6 + 0.4 * headGrow);
-      // mykt kremet skum-bånd langs overflaten
+      var headH = (phase === "fill" ? 22 : 34) * (0.55 + 0.45 * headGrow);
+      // Tett kremet base-bånd som dekker HELE bredden (over overflaten)
       x.beginPath();
-      for (var xf2 = 0; xf2 <= W; xf2 += 7){ if (xf2 === 0) x.moveTo(0, surfaceY(levelY, 0, ph) + headH); else x.lineTo(xf2, surfaceY(levelY, xf2, ph) + headH); }
-      for (var xb = W; xb >= 0; xb -= 7) x.lineTo(xb, surfaceY(levelY, xb, ph) - 3);
-      x.closePath(); x.fillStyle = "rgba(252,246,231,0.72)"; x.fill();
-      // skumbobler
+      for (var xt = 0; xt <= W; xt += 7){ var yt = surfaceY(levelY, xt, ph) - headH; if (xt === 0) x.moveTo(0, yt); else x.lineTo(xt, yt); }
+      for (var xb = W; xb >= 0; xb -= 7) x.lineTo(xb, surfaceY(levelY, xb, ph) + 4);
+      x.closePath(); x.fillStyle = "rgba(249,243,228,0.88)"; x.fill();
+      // Lag av skumbobler for kremet tekstur (full bredde)
       for (var k = 0; k < foam.length; k++){
-        var fb = foam[k]; fb.sp += dt * 1.2;
-        var fyb = surfaceY(levelY, fb.x, ph) - fb.off * (headH / 26) + Math.sin(fb.sp) * 1.2;
+        var fb = foam[k]; fb.sp += dt * fb.spS;
+        var fyb = surfaceY(levelY, fb.x, ph) - fb.off * (headH / 34) - 1 + Math.sin(fb.sp) * 1.0;
         blit(foamSprite, fb.x, fyb, fb.sz * (0.7 + 0.5 * headGrow));
       }
 
