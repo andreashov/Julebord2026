@@ -203,6 +203,9 @@ select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.o
 input:focus, select:focus, textarea:focus{outline:none; border-color:var(--gold);
   background:rgba(0,0,0,.34); box-shadow:0 0 0 4px rgba(230,197,132,.14);}
 textarea{min-height:80px; resize:vertical;}
+.pay-note{background:rgba(182,66,81,.16); border:1px solid rgba(230,197,132,.28); border-radius:14px;
+  padding:12px 14px; font-size:.9rem; color:var(--ink); margin:4px 0 14px;}
+.pay-note b{color:var(--gold-2);}
 .msg{border-radius:14px; padding:12px 14px; margin-top:12px; font-size:.9rem; display:none;}
 .msg.show{display:block;}
 .msg.err{background:rgba(240,166,161,.1); border:1px solid rgba(240,166,161,.4); color:var(--err);}
@@ -282,7 +285,7 @@ footer .sn{color:var(--gold); letter-spacing:.45em;}
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
           Tilbake
         </button>
-        <div class="step-dots" aria-hidden="true"><span class="dot"></span><span class="dot on"></span><span class="dot"></span></div>
+        <div class="step-dots" aria-hidden="true"><span class="dot"></span><span class="dot on"></span></div>
       </div>
 
       <div class="glass pad">
@@ -316,49 +319,17 @@ footer .sn{color:var(--gold); letter-spacing:.45em;}
             <textarea id="kommentar" name="kommentar" placeholder="Noe vi bør vite?"></textarea>
           </div>
 
-          <button type="submit" class="btn btn-gold" id="submit-btn">Til betaling
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          <div class="pay-note">
+            Etter «Til betaling» åpnes <b>Vipps</b>. Legg inn <b>kr <span id="pay-price">500</span></b>
+            <span id="pay-note-2"></span> og skriv <b>navnet ditt</b> som melding.
+          </div>
+
+          <button type="submit" class="btn btn-vipps" id="submit-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm4.2 7.6c-.9 2.3-2.6 3.9-4.8 3.9-1.5 0-2.4-.8-3.2-2.1-.3-.5-.1-1 .4-1.3.5-.3 1-.1 1.3.4.4.7.8 1 1.5 1 1 0 1.9-.8 2.5-2.3.2-.6.8-.9 1.4-.6.5.2.8.8.5 1z"/></svg>
+            Til betaling med Vipps
           </button>
           <div class="msg err" id="form-msg" role="alert"></div>
         </form>
-      </div>
-    </section>
-
-    <!-- ============== SKJERM 3: BETALING ============== -->
-    <section class="screen" id="screen-2" aria-label="Betaling">
-      <div class="topbar">
-        <button class="back" type="button" data-back>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
-          Tilbake
-        </button>
-        <div class="step-dots" aria-hidden="true"><span class="dot"></span><span class="dot"></span><span class="dot on"></span></div>
-      </div>
-
-      <div class="glass pad">
-        <div class="pay-hero">
-          <div class="check" aria-hidden="true">
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
-          </div>
-          <h2>Påmelding registrert</h2>
-          <p>Ett steg igjen — betal for å sikre plassen.</p>
-        </div>
-
-        <div class="amount"><span class="cur">kr</span> <span id="pay-amount">500</span></div>
-
-        <ol class="steps">
-          <li>Trykk <b>Betal med Vipps</b> under.</li>
-          <li>Beløpet er <b>kr <span id="pay-price">500</span></b> pr. person.</li>
-          <li>Skriv <b>navnet ditt</b> som melding, så finner vi deg igjen.</li>
-        </ol>
-
-        <div class="ref-tip" id="ref-tip" style="display:none;">
-          💡 Betaler du for to? Legg inn <b>kr <span id="pay-price-2">1000</span></b> og skriv begge navn.
-        </div>
-
-        <a id="vipps-btn" class="btn btn-vipps" href="#" target="_blank" rel="noopener">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm4.2 7.6c-.9 2.3-2.6 3.9-4.8 3.9-1.5 0-2.4-.8-3.2-2.1-.3-.5-.1-1 .4-1.3.5-.3 1-.1 1.3.4.4.7.8 1 1.5 1 1 0 1.9-.8 2.5-2.3.2-.6.8-.9 1.4-.6.5.2.8.8.5 1z"/></svg>
-          Betal med Vipps
-        </a>
       </div>
 
       <footer>
@@ -405,12 +376,10 @@ const CONFIG = {
   document.getElementById("v-deadline").textContent = d.frist;
   document.getElementById("v-price").textContent = CONFIG.pris;
   document.getElementById("pay-price").textContent = CONFIG.pris;
-  document.getElementById("pay-amount").textContent = CONFIG.pris;
-  document.getElementById("pay-price-2").textContent = CONFIG.pris * 2;
 
   /* ---------- Skjerm-navigasjon ---------- */
   var stage = document.getElementById("stage");
-  var screens = [0,1,2].map(function(i){ return document.getElementById("screen-"+i); });
+  var screens = [0,1].map(function(i){ return document.getElementById("screen-"+i); });
   var current = 0;
 
   function setHeight(){ stage.style.height = screens[current].offsetHeight + "px"; }
@@ -445,28 +414,17 @@ const CONFIG = {
   setTimeout(setHeight, 60);
   setHeight();
 
-  /* ---------- Vipps-lenke + referanse-tips ---------- */
-  var vippsBtn = document.getElementById("vipps-btn");
-  var refTip = document.getElementById("ref-tip");
+  /* ---------- Beløp i instruksjonsboksen (oppdateres ved antall) ---------- */
   var antallSel = document.getElementById("antall");
+  var payNote2 = document.getElementById("pay-note-2");
 
-  function refreshPay(){
-    var link = (CONFIG.vippsLenke || "").trim();
-    if (link){
-      vippsBtn.setAttribute("href", link);
-      vippsBtn.style.pointerEvents = "";
-      vippsBtn.style.opacity = "";
-    } else {
-      vippsBtn.setAttribute("href", "#");
-      vippsBtn.style.pointerEvents = "none";
-      vippsBtn.style.opacity = ".55";
-    }
+  function refreshNote(){
     var two = antallSel.value === "2";
-    refTip.style.display = two ? "block" : "none";
-    document.getElementById("pay-amount").textContent = two ? CONFIG.pris * 2 : CONFIG.pris;
+    document.getElementById("pay-price").textContent = two ? CONFIG.pris * 2 : CONFIG.pris;
+    payNote2.textContent = two ? "(kr " + CONFIG.pris + " × 2)" : "";
   }
-  antallSel.addEventListener("change", refreshPay);
-  refreshPay();
+  antallSel.addEventListener("change", refreshNote);
+  refreshNote();
 
   /* ---------- Innsending ---------- */
   var form = document.getElementById("rsvp-form");
@@ -488,6 +446,7 @@ const CONFIG = {
       kommentar: form.kommentar.value.trim(), tidspunkt: new Date().toISOString()
     };
     var endpoint = (CONFIG.paameldingEndepunkt || "").trim();
+    var vippsLink = (CONFIG.vippsLenke || "").trim();
     btn.disabled = true; btn.textContent = "Sender …";
 
     try {
@@ -503,14 +462,18 @@ const CONFIG = {
       } else {
         console.info("[Testmodus] Ingen paameldingEndepunkt satt. Data:", data);
       }
-      refreshPay();
-      goTo(2);
-      btn.disabled = false;
-      btn.innerHTML = 'Til betaling <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+
+      // Rett til Vipps
+      if (vippsLink){
+        window.location.href = vippsLink;
+      } else {
+        showErr("Vipps-lenke er ikke satt opp ennå. Ta kontakt med arrangøren.");
+        btn.disabled = false; btn.textContent = "Til betaling med Vipps";
+      }
     } catch (err){
       console.error(err);
       showErr("Noe gikk galt under sending. Prøv igjen, eller ta kontakt med arrangøren.");
-      btn.disabled = false; btn.textContent = "Til betaling";
+      btn.disabled = false; btn.textContent = "Til betaling med Vipps";
     }
   });
 
