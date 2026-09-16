@@ -144,8 +144,11 @@ body{
 .hero{text-align:center; padding:16px 8px 4px;}
 .emblem{display:block; margin:0 auto 6px; filter:drop-shadow(0 0 16px rgba(230,197,132,.6));
   animation:twinkle 4s ease-in-out infinite, riseIn .7s var(--ease) both;}
-.dept{font-size:.78rem; font-weight:700; letter-spacing:.3em; text-transform:uppercase;
-  color:var(--gold); opacity:.94; margin:4px 0 0; animation:riseIn .7s .12s var(--ease) both;}
+.dept{font-size:.78rem; font-weight:700; letter-spacing:.3em; text-transform:uppercase; margin:4px 0 0;
+  background:linear-gradient(105deg, var(--gold) 42%, #fff3d0 50%, var(--gold) 58%);
+  background-size:250% 100%; background-position:180% 0; background-repeat:no-repeat;
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  animation:shimmerText 3s linear .18s infinite, riseIn .7s .12s var(--ease) both;}
 @keyframes twinkle{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.82; transform:scale(.94);}}
 @media (prefers-reduced-motion:reduce){.emblem{animation:none;}}
 .hero h1{
@@ -158,13 +161,17 @@ body{
   background-size:280% 100%, 100% 100%; background-position:180% 0, 0 0; background-repeat:no-repeat;
   -webkit-background-clip:text; background-clip:text; color:transparent;
   text-shadow:0 2px 30px rgba(230,197,132,.18);
-  animation:shimmer 4.5s ease-in-out 1.1s infinite, riseIn .7s .08s var(--ease) both;
+  animation:shimmer 3s linear infinite, riseIn .7s .08s var(--ease) both;
 }
-@keyframes shimmer{0%{background-position:180% 0, 0 0;}55%,100%{background-position:-90% 0, 0 0;}}
+@keyframes shimmer{0%{background-position:180% 0, 0 0;}84%,100%{background-position:-90% 0, 0 0;}}
+@keyframes shimmerText{0%{background-position:180% 0;}84%,100%{background-position:-80% 0;}}
 @keyframes riseIn{from{opacity:0; transform:translateY(18px);}to{opacity:1; transform:none;}}
 .hero .yr{display:block; font-family:var(--font-display); font-style:italic; font-weight:600;
-  font-size:clamp(1.9rem, 8.5vw, 2.8rem); line-height:1; color:var(--gold-2);
-  -webkit-text-fill-color:var(--gold-2); margin-top:2px; animation:riseIn .7s .18s var(--ease) both;}
+  font-size:clamp(1.9rem, 8.5vw, 2.8rem); line-height:1; margin-top:2px;
+  background:linear-gradient(105deg, var(--gold-2) 42%, #fff6df 50%, var(--gold-2) 58%);
+  background-size:250% 100%; background-position:180% 0; background-repeat:no-repeat;
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  animation:shimmerText 3s linear .34s infinite, riseIn .7s .18s var(--ease) both;}
 .divider{display:flex; align-items:center; justify-content:center; gap:12px; color:var(--gold); margin:18px auto 0; opacity:.9;}
 .divider::before,.divider::after{content:""; height:1px; width:52px;}
 .divider::before{background:linear-gradient(90deg,transparent,var(--gold));}
@@ -217,8 +224,8 @@ body{
 .btn-gold::before{content:""; position:absolute; inset:0; z-index:0; pointer-events:none;
   background:linear-gradient(105deg, transparent 37%, rgba(255,251,235,.7) 50%, transparent 63%);
   background-size:250% 100%; background-position:210% 0; background-repeat:no-repeat;
-  animation:btnShine 3.4s ease-in-out 1s infinite;}
-@keyframes btnShine{0%{background-position:210% 0;} 55%,100%{background-position:-120% 0;}}
+  animation:btnShine 3s linear infinite;}
+@keyframes btnShine{0%{background-position:210% 0;} 84%,100%{background-position:-120% 0;}}
 .btn-glass{
   color:var(--ink);
   background:var(--glass-bg); border:1px solid var(--glass-brd);
