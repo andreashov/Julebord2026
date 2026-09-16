@@ -226,9 +226,13 @@ input:focus, select:focus, textarea:focus{outline:none; border-color:var(--gold)
   background:linear-gradient(180deg, rgba(255,255,255,.1), rgba(255,255,255,.035));
   box-shadow:0 0 0 4px rgba(230,197,132,.16), inset 0 1px 0 rgba(255,255,255,.14), 0 6px 18px -8px rgba(230,197,132,.35);}
 textarea{min-height:86px; resize:vertical; line-height:1.5;}
-.pay-note{background:rgba(182,66,81,.16); border:1px solid rgba(230,197,132,.28); border-radius:14px;
-  padding:12px 14px; font-size:.9rem; color:var(--ink); margin:4px 0 14px;}
-.pay-note b{color:var(--gold-2);}
+.pay-note{background:rgba(182,66,81,.16); border:1px solid rgba(230,197,132,.28); border-radius:16px;
+  padding:14px 18px; margin:4px 0 16px;}
+.pn-row{display:flex; align-items:center; justify-content:space-between; gap:12px;}
+.pn-label{font-size:.7rem; font-weight:700; letter-spacing:.15em; text-transform:uppercase; color:var(--gold);}
+.pn-amount{font-family:var(--font-display); font-weight:700; font-size:1.75rem; line-height:1;
+  background:linear-gradient(180deg,#fff,var(--gold)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+.pn-hint{display:block; margin-top:7px; font-size:.8rem; color:var(--ink-dim);}
 .msg{border-radius:14px; padding:12px 14px; margin-top:12px; font-size:.9rem; display:none;}
 .msg.show{display:block;}
 .msg.err{background:rgba(240,166,161,.1); border:1px solid rgba(240,166,161,.4); color:var(--err);}
@@ -381,12 +385,16 @@ footer .sn{color:var(--gold); letter-spacing:.45em;}
             </select>
           </div>
           <div class="field">
-            <label for="kommentar">Kommentar <span class="hint">(valgfritt)</span></label>
+            <label for="kommentar">Kommentar</label>
             <textarea id="kommentar" name="kommentar" placeholder="Har du allergier? Skriv det gjerne her."></textarea>
           </div>
 
           <div class="pay-note">
-            Etter «Til betaling» åpnes <b>Vipps</b>. Legg inn <b>kr <span id="pay-price">500</span></b> og skriv <b>navnet ditt</b> som melding.
+            <div class="pn-row">
+              <span class="pn-label">Å betale</span>
+              <span class="pn-amount">kr <span id="pay-price">500</span></span>
+            </div>
+            <span class="pn-hint">Merk betalingen med navnet ditt i Vipps</span>
           </div>
 
           <button type="submit" class="btn btn-vipps" id="submit-btn">
