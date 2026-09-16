@@ -145,10 +145,12 @@ body{
 .emblem{display:block; margin:0 auto 6px; filter:drop-shadow(0 0 16px rgba(230,197,132,.6));
   animation:twinkle 4s ease-in-out infinite, riseIn .7s var(--ease) both;}
 .dept{font-size:.78rem; font-weight:700; letter-spacing:.3em; text-transform:uppercase; margin:4px 0 0;
-  background:linear-gradient(105deg, var(--gold) 42%, #fff3d0 50%, var(--gold) 58%);
-  background-size:250% 100%; background-position:180% 0; background-repeat:no-repeat;
+  background:
+    linear-gradient(105deg, transparent 42%, rgba(255,247,220,.9) 50%, transparent 58%),
+    linear-gradient(var(--gold), var(--gold));
+  background-size:250% 100%, 100% 100%; background-position:180% 0, 0 0; background-repeat:no-repeat;
   -webkit-background-clip:text; background-clip:text; color:transparent;
-  animation:shimmerText 3s linear .18s infinite, riseIn .7s .12s var(--ease) both;}
+  animation:shimmer 3s linear .18s infinite, riseIn .7s .12s var(--ease) both;}
 @keyframes twinkle{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.82; transform:scale(.94);}}
 @media (prefers-reduced-motion:reduce){.emblem{animation:none;}}
 .hero h1{
@@ -168,10 +170,12 @@ body{
 @keyframes riseIn{from{opacity:0; transform:translateY(18px);}to{opacity:1; transform:none;}}
 .hero .yr{display:block; font-family:var(--font-display); font-style:italic; font-weight:600;
   font-size:clamp(1.9rem, 8.5vw, 2.8rem); line-height:1; margin-top:2px;
-  background:linear-gradient(105deg, var(--gold-2) 42%, #fff6df 50%, var(--gold-2) 58%);
-  background-size:250% 100%; background-position:180% 0; background-repeat:no-repeat;
+  background:
+    linear-gradient(105deg, transparent 42%, rgba(255,250,235,.92) 50%, transparent 58%),
+    linear-gradient(var(--gold-2), var(--gold-2));
+  background-size:250% 100%, 100% 100%; background-position:180% 0, 0 0; background-repeat:no-repeat;
   -webkit-background-clip:text; background-clip:text; color:transparent;
-  animation:shimmerText 3s linear .34s infinite, riseIn .7s .18s var(--ease) both;}
+  animation:shimmer 3s linear .34s infinite, riseIn .7s .18s var(--ease) both;}
 .divider{display:flex; align-items:center; justify-content:center; gap:12px; color:var(--gold); margin:18px auto 0; opacity:.9;}
 .divider::before,.divider::after{content:""; height:1px; width:52px;}
 .divider::before{background:linear-gradient(90deg,transparent,var(--gold));}
