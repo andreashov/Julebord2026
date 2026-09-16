@@ -759,7 +759,7 @@ const CONFIG = {
         var dp = (t - beerDrainAt) / DRAIN;
         if (dp >= 1){ x.clearRect(0, 0, W, H); c.style.display = "none"; beerActive = false; beerDrainAt = -1; return; }
         lvl = beerDrainStartLvl * (1 - dp); phase = "drain"; headGrow = 0.5;
-      } else if (el < FILL){ var p = el / FILL; lvl = TOP * (1 - Math.pow(1 - p, 2)); phase = "fill"; headGrow = p; }
+      } else if (el < FILL){ var p = el / FILL; lvl = 0.05 + (TOP - 0.05) * (1 - Math.pow(1 - p, 2)); phase = "fill"; headGrow = p; }
       else { lvl = TOP; phase = "stay"; headGrow = 0.9; }
       beerLvlNow = lvl;
 
@@ -787,11 +787,12 @@ const CONFIG = {
       x.fillStyle = rg2; x.fillRect(W * 0.84, levelY, W * 0.16, H);
       x.restore();
 
-      // Karbonasjon: fine bobler, helt vilkårlig plassert, langsomt oppover
+      // Karbonasjon: fine bobler, vilkårlig i HELE ølet, kontinuerlig
       if (phase !== "drain"){
-        for (var e = 0; e < 3; e++){
-          if (bubbles.length < 165 && Math.random() < 0.62)
-            bubbles.push({ x: Math.random() * W, y: H - Math.random() * 6,
+        var span = Math.max(1, H - levelY);
+        for (var e = 0; e < 4; e++){
+          if (bubbles.length < 185 && Math.random() < 0.72)
+            bubbles.push({ x: Math.random() * W, y: levelY + span * (0.28 + 0.72 * Math.random()),
               r: Math.random() * 1.3 + 0.6, vy: Math.random() * 8 + 5, grow: Math.random() * 0.9 + 0.35,
               wob: Math.random() * 6.28, wobS: Math.random() * 1.8 + 0.7 });
         }
