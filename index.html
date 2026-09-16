@@ -588,7 +588,7 @@ const CONFIG = {
     f.el.addEventListener("blur", upd);
   });
 
-  /* Feiring: gull-gnist-byge før viderekobling */
+  /* Feiring: skikkelig snøfall som faller ned over skjermen, så videre */
   function celebrate(done){
     var c = document.getElementById("burst");
     if (!c || reduce){ done(); return; }
@@ -596,28 +596,47 @@ const CONFIG = {
     var DPR = Math.min(window.devicePixelRatio || 1, 2);
     var W = c.width = innerWidth * DPR, H = c.height = innerHeight * DPR;
     c.style.display = "block";
-    var cx = W / 2, cy = H * 0.4, P = [], cols = ["#f2dca8","#e6c584","#ffffff","#ff8a5c","#6fd6a0"];
-    for (var i = 0; i < 110; i++){
-      var a = Math.random() * Math.PI * 2, sp = (Math.random() * 7 + 3) * DPR;
-      P.push({ x: cx, y: cy, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 2.5 * DPR,
-               r: (Math.random() * 3 + 1.5) * DPR, life: 1,
-               dec: Math.random() * 0.008 + 0.009, col: cols[(Math.random() * cols.length) | 0] });
+
+    var DUR = 2100, FADE = 1500;           // total varighet / når uttoning starter
+    var N = Math.max(70, Math.round(innerWidth / 6));
+    var F = [];
+    function mk(spread){
+      var r = (Math.random() * 3.2 + 1.2) * DPR;
+      return {
+        x: Math.random() * W,
+        y: spread ? Math.random() * H : (-12 * DPR - Math.random() * H * 0.4),
+        r: r,
+        vy: (Math.random() * 1.6 + 1.1) * DPR + r * 0.25,   // større fnugg faller raskere
+        sway: Math.random() * Math.PI * 2,
+        sSpd: Math.random() * 0.03 + 0.012,
+        sAmp: (Math.random() * 1.4 + 0.5) * DPR,
+        o: Math.random() * 0.55 + 0.4
+      };
     }
+    for (var i = 0; i < N; i++) F.push(mk(true));   // start: snø allerede spredt utover
+
     var t0 = performance.now(), finished = false;
     function end(){ if (finished) return; finished = true; c.style.display = "none"; done(); }
+
     (function anim(t){
+      var dt = t - t0;
+      var fade = dt > FADE ? Math.max(0, 1 - (dt - FADE) / (DUR - FADE)) : 1;
       x.clearRect(0, 0, W, H);
-      var alive = false;
-      for (var i = 0; i < P.length; i++){
-        var p = P[i]; if (p.life <= 0) continue; alive = true;
-        p.vy += 0.16 * DPR; p.vx *= 0.99; p.x += p.vx; p.y += p.vy; p.life -= p.dec;
-        x.globalAlpha = Math.max(p.life, 0); x.fillStyle = p.col;
-        x.beginPath(); x.arc(p.x, p.y, p.r, 0, 6.283); x.fill();
+      for (var i = 0; i < F.length; i++){
+        var f = F[i];
+        f.y += f.vy; f.sway += f.sSpd; f.x += Math.sin(f.sway) * f.sAmp * 0.35;
+        if (f.y > H + 12){
+          if (dt < FADE){ var n = mk(false); f.x = n.x; f.y = n.y; f.r = n.r; f.vy = n.vy; f.sway = n.sway; f.sSpd = n.sSpd; f.sAmp = n.sAmp; f.o = n.o; }
+          else continue;
+        }
+        x.globalAlpha = f.o * fade;
+        x.beginPath(); x.arc(f.x, f.y, f.r, 0, 6.283); x.fillStyle = "#ffffff"; x.fill();
       }
       x.globalAlpha = 1;
-      if (alive && t - t0 < 1400) requestAnimationFrame(anim); else end();
+      if (dt < DUR) requestAnimationFrame(anim); else end();
     })(t0);
-    setTimeout(end, 1500); // sikkerhetsnett
+
+    setTimeout(end, DUR + 300); // sikkerhetsnett
   }
 
   form.addEventListener("submit", function(e){
@@ -659,16 +678,11 @@ const CONFIG = {
       console.info("[Testmodus] Ingen paameldingEndepunkt satt. Data:", data);
     }
 
-    if (isMobile){
-      // Mobil: naviger i SAMME trykk → Vipps-appen åpnes (universelle lenker
-      // krever at navigasjonen skjer i brukergesten, uten forsinkelse).
-      window.location.href = vippsLink;
-    } else {
-      // PC/Mac: kort feiring, så Vipps' QR-side (qr.vipps.no viser QR på desktop).
-      haptic([15, 40, 20]);
-      btn.innerHTML = "Påmeldt! 🎉";
-      celebrate(function(){ window.location.href = vippsLink; });
-    }
+    // Snøfall-feiring på både mobil og desktop, så videre til Vipps.
+    // (Merk: forsinkelsen kan gjøre at iOS åpner Vipps som nettside i stedet for app.)
+    haptic([15, 40, 20]);
+    btn.innerHTML = "Påmeldt! ❄️";
+    celebrate(function(){ window.location.href = vippsLink; });
   });
 
   /* ---------- Diskret snø (respekterer redusert bevegelse) ---------- */
