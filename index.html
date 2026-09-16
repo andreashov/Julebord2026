@@ -747,7 +747,7 @@ const CONFIG = {
     var foam = [], fN = Math.max(26, Math.round(W / 7));
     for (var f = 0; f < fN; f++) foam.push({ x: Math.random() * W, sz: Math.random() * 12 + 5, off: Math.random() * 10, sp: Math.random() * 6.28 });
 
-    var bubbles = [], t0 = performance.now(), last = t0, streamX = W * (0.42 + Math.random() * 0.16);
+    var bubbles = [], pops = [], t0 = performance.now(), last = t0;
 
     (function frame(t){
       var dt = Math.min((t - last) / 1000, 0.05); last = t;
@@ -784,26 +784,26 @@ const CONFIG = {
       x.fillStyle = rg2; x.fillRect(W * 0.84, levelY, W * 0.16, H);
       x.restore();
 
-      // Karbonasjon: strømmer + litt tilfeldig
+      // Karbonasjon: fine bobler i kolonner, langsomt oppover
       if (phase !== "drain"){
         for (var s = 0; s < streams.length; s++){
           streams[s].t -= dt;
           if (streams[s].t <= 0){
-            streams[s].t = 0.12 + Math.random() * 0.22;
-            bubbles.push({ x: streams[s].x + (Math.random() * 8 - 4), y: H - Math.random() * 8,
-              r: Math.random() * 1.6 + 1, vy: Math.random() * 40 + 40, grow: Math.random() * 3 + 1.5,
-              wob: Math.random() * 6.28, wobS: Math.random() * 2.5 + 1 });
+            streams[s].t = 0.05 + Math.random() * 0.13;
+            bubbles.push({ x: streams[s].x + (Math.random() * 8 - 4), y: H - Math.random() * 5,
+              r: Math.random() * 1.3 + 0.7, vy: Math.random() * 9 + 7, grow: Math.random() * 1.1 + 0.4,
+              wob: Math.random() * 6.28, wobS: Math.random() * 1.8 + 0.7 });
           }
         }
-        if (bubbles.length < 120 && Math.random() < 0.5)
-          bubbles.push({ x: Math.random() * W, y: H - Math.random() * 8, r: Math.random() * 1.6 + 0.8,
-            vy: Math.random() * 35 + 30, grow: Math.random() * 2 + 1, wob: Math.random() * 6.28, wobS: Math.random() * 2.5 + 1 });
+        if (bubbles.length < 170 && Math.random() < 0.75)
+          bubbles.push({ x: Math.random() * W, y: H - Math.random() * 5, r: Math.random() * 1.2 + 0.6,
+            vy: Math.random() * 8 + 5, grow: Math.random() * 0.9 + 0.35, wob: Math.random() * 6.28, wobS: Math.random() * 1.8 + 0.7 });
       }
       for (var i = bubbles.length - 1; i >= 0; i--){
         var b = bubbles[i];
-        b.vy += 24 * dt; b.r += b.grow * dt; b.y -= b.vy * dt; b.wob += b.wobS * dt; b.x += Math.sin(b.wob) * 0.6;
+        b.vy += 6 * dt; b.r += b.grow * dt; b.y -= b.vy * dt; b.wob += b.wobS * dt; b.x += Math.sin(b.wob) * 0.45;
         var surf = surfaceY(levelY, b.x, ph);
-        if (b.y < surf + 3){ bubbles.splice(i, 1); continue; }
+        if (b.y < surf + 2){ pops.push({ x: b.x, y: surf + 2, r: b.r, life: 1 }); bubbles.splice(i, 1); continue; }
         blit(bubbleSprite, b.x, b.y, b.r * 2.4);
       }
 
@@ -826,10 +826,20 @@ const CONFIG = {
         blit(foamSprite, fb.x, fyb, fb.sz * (0.7 + 0.5 * headGrow));
       }
 
+      // Bobler som sprekker ved overflaten: krusning + liten skumdott
+      for (var pi = pops.length - 1; pi >= 0; pi--){
+        var pp = pops[pi]; pp.life -= dt * 3;
+        if (pp.life <= 0){ pops.splice(pi, 1); continue; }
+        var rr = pp.r * (1 + (1 - pp.life) * 2.6);
+        x.strokeStyle = "rgba(255,250,236," + (pp.life * 0.5) + ")"; x.lineWidth = 1.2;
+        x.beginPath(); x.arc(pp.x, surfaceY(levelY, pp.x, ph) + 2, rr, 0, 6.283); x.stroke();
+        blit(foamSprite, pp.x, surfaceY(levelY, pp.x, ph), pp.r * (1.6 + (1 - pp.life) * 1.4));
+      }
+
       requestAnimationFrame(frame);
     })(t0);
   }
-  var FILL = 2700, DRAIN = 1300, TOP = 0.95;
+  var FILL = 5200, DRAIN = 1500, TOP = 0.95;
   var emblemEl = document.querySelector(".emblem");
   if (emblemEl) emblemEl.addEventListener("click", function(){
     if (!beerActive){ pourBeer(); }
