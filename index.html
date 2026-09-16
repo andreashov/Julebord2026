@@ -140,15 +140,19 @@ body{
 .hero p{color:var(--ink-soft); max-width:40ch; margin:16px auto 0; font-size:1.02rem;}
 
 .info{margin-top:22px;}
-.info h2, .form-h{font-family:var(--font-display); font-size:1.5rem; font-weight:600; margin:2px 0 14px;}
+.info h2, .form-h{font-family:var(--font-display); font-size:1.6rem; font-weight:600; margin:2px 0 12px; letter-spacing:.3px;}
+.form-h{margin-bottom:4px;}
+.form-sub{color:var(--ink-soft); font-size:.92rem; margin:0 0 20px;}
 .rows{list-style:none; margin:0; padding:0;}
-.rows li{display:flex; gap:14px; align-items:center; padding:13px 0; border-bottom:1px solid rgba(255,255,255,.08);}
+.rows li{display:flex; gap:15px; align-items:flex-start; padding:15px 0; border-bottom:1px solid rgba(255,255,255,.07);}
 .rows li:last-child{border-bottom:0;}
-.rows .ic{flex:0 0 auto; width:40px; height:40px; display:grid; place-items:center; font-size:1.15rem;
-  border-radius:12px; background:var(--glass-bg-2); border:1px solid var(--glass-brd);}
-.rows .k{font-size:.7rem; letter-spacing:.13em; text-transform:uppercase; color:var(--gold);}
-.rows .v{font-size:1.05rem; font-weight:500; color:var(--ink);}
-.rows .v small{display:block; color:var(--ink-dim); font-weight:400; font-size:.85rem;}
+.rows .ic{flex:0 0 auto; width:42px; height:42px; display:grid; place-items:center; font-size:1.15rem; margin-top:2px;
+  border-radius:13px; background:var(--glass-bg-2); border:1px solid var(--glass-brd);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.14);}
+.rows .txt{min-width:0;}
+.rows .k{display:block; font-size:.66rem; letter-spacing:.18em; text-transform:uppercase; color:var(--gold); margin-bottom:3px;}
+.rows .v{display:block; font-size:1.08rem; font-weight:600; color:var(--ink); letter-spacing:.2px;}
+.rows .v small{display:block; color:var(--ink-dim); font-weight:400; font-size:.86rem; letter-spacing:0; margin-top:2px;}
 .price-pill{display:inline-flex; align-items:baseline; gap:6px; color:var(--gold-2); font-weight:700; font-size:1.15rem;}
 .price-pill span{font-size:.8rem; color:var(--ink-dim); font-weight:500;}
 
@@ -189,20 +193,24 @@ body{
 /* =========================================================================
    SKJEMA
    ========================================================================= */
-.field{margin-bottom:15px;}
-.field label{display:block; font-size:.8rem; font-weight:600; margin-bottom:7px; color:var(--ink);}
-.field .hint{color:var(--ink-dim); font-weight:400;}
-.req{color:var(--gold);}
+.field{margin-bottom:19px;}
+.field label{display:block; font-size:.7rem; font-weight:700; letter-spacing:.15em; text-transform:uppercase;
+  margin-bottom:9px; color:var(--gold); padding-left:2px;}
+.field .hint{color:var(--ink-dim); font-weight:500; letter-spacing:.02em; text-transform:none;}
+.req{color:var(--red); -webkit-text-fill-color:var(--red);}
 input, select, textarea{
-  width:100%; font-family:inherit; font-size:16px; color:var(--ink);
-  background:rgba(0,0,0,.28); border:1px solid var(--glass-brd);
-  border-radius:14px; padding:14px 15px; -webkit-appearance:none; appearance:none;
-  transition:border-color .18s, box-shadow .18s, background .18s;}
-input::placeholder, textarea::placeholder{color:#7d857d;}
-select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='none' stroke='%23e6c584' stroke-width='2'><path d='M4 7l5 5 5-5'/></svg>");background-repeat:no-repeat;background-position:right 13px center;padding-right:40px;}
+  width:100%; font-family:inherit; font-size:16px; color:var(--ink); letter-spacing:.2px;
+  background:linear-gradient(180deg, rgba(255,255,255,.065), rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:16px; padding:16px 17px; -webkit-appearance:none; appearance:none;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08), 0 2px 6px -3px rgba(0,0,0,.5);
+  transition:border-color .2s var(--ease), box-shadow .2s var(--ease), background .2s var(--ease);}
+input::placeholder, textarea::placeholder{color:#83907f; font-weight:400;}
+select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='none' stroke='%23e6c584' stroke-width='2.2'><path d='M4 7l5 5 5-5'/></svg>");background-repeat:no-repeat;background-position:right 15px center;padding-right:42px;}
 input:focus, select:focus, textarea:focus{outline:none; border-color:var(--gold);
-  background:rgba(0,0,0,.34); box-shadow:0 0 0 4px rgba(230,197,132,.14);}
-textarea{min-height:80px; resize:vertical;}
+  background:linear-gradient(180deg, rgba(255,255,255,.1), rgba(255,255,255,.035));
+  box-shadow:0 0 0 4px rgba(230,197,132,.16), inset 0 1px 0 rgba(255,255,255,.14), 0 6px 18px -8px rgba(230,197,132,.35);}
+textarea{min-height:86px; resize:vertical; line-height:1.5;}
 .pay-note{background:rgba(182,66,81,.16); border:1px solid rgba(230,197,132,.28); border-radius:14px;
   padding:12px 14px; font-size:.9rem; color:var(--ink); margin:4px 0 14px;}
 .pay-note b{color:var(--gold-2);}
@@ -262,11 +270,11 @@ footer .sn{color:var(--gold); letter-spacing:.45em;}
       <div class="glass pad info">
         <h2>Detaljer</h2>
         <ul class="rows">
-          <li><span class="ic">📅</span><span><span class="k">Når</span><span class="v" id="v-date">Fredag 20. november 2026<small id="v-time">Kl. 19:00</small></span></span></li>
-          <li><span class="ic">📍</span><span><span class="k">Hvor</span><span class="v" id="v-place">Fredrikstad Skytterhus<small id="v-address">Ilaveien 134, 1605 Fredrikstad</small></span></span></li>
-          <li><span class="ic">👔</span><span><span class="k">Antrekk</span><span class="v" id="v-dress">Pent / mørk dress</span></span></li>
-          <li><span class="ic">💳</span><span><span class="k">Pris pr. person</span><span class="v"><span class="price-pill"><span>kr</span><b id="v-price">500</b></span></span></span></li>
-          <li><span class="ic">⏳</span><span><span class="k">Påmeldingsfrist</span><span class="v" id="v-deadline">13. november 2026</span></span></li>
+          <li><span class="ic">📅</span><span class="txt"><span class="k">Når</span><span class="v" id="v-date">Fredag 20. november 2026<small id="v-time">Kl. 19:00</small></span></span></li>
+          <li><span class="ic">📍</span><span class="txt"><span class="k">Hvor</span><span class="v" id="v-place">Fredrikstad Skytterhus<small id="v-address">Ilaveien 134, 1605 Fredrikstad</small></span></span></li>
+          <li><span class="ic">👔</span><span class="txt"><span class="k">Antrekk</span><span class="v" id="v-dress">Pent / mørk dress<small id="v-dress-info">Mørk dress eller kjole — ta gjerne på litt julestemning ✨</small></span></span></li>
+          <li><span class="ic">💳</span><span class="txt"><span class="k">Pris pr. person</span><span class="v"><span class="price-pill"><span>kr</span><b id="v-price">500</b></span></span></span></li>
+          <li><span class="ic">⏳</span><span class="txt"><span class="k">Påmeldingsfrist</span><span class="v" id="v-deadline">13. november 2026</span></span></li>
         </ul>
       </div>
 
@@ -290,6 +298,7 @@ footer .sn{color:var(--gold); letter-spacing:.45em;}
 
       <div class="glass pad">
         <h2 class="form-h">Meld deg på</h2>
+        <p class="form-sub">Fyll ut, så tar vi deg videre til betaling med Vipps.</p>
         <form id="rsvp-form" novalidate>
           <div class="field">
             <label for="navn">Navn <span class="req">*</span></label>
@@ -359,8 +368,9 @@ const CONFIG = {
     tid:     "Kl. 19:00",
     sted:    "Fredrikstad Skytterhus",
     adresse: "Ilaveien 134, 1605 Fredrikstad",
-    antrekk: "Pent / mørk dress",
-    frist:   "13. november 2026"
+    antrekk:     "Pent / mørk dress",
+    antrekkInfo: "Mørk dress eller kjole — ta gjerne på litt julestemning ✨",
+    frist:       "13. november 2026"
   }
 };
 
@@ -372,7 +382,8 @@ const CONFIG = {
   document.getElementById("v-time").textContent = d.tid;
   document.getElementById("v-place").firstChild.textContent = d.sted;
   document.getElementById("v-address").textContent = d.adresse;
-  document.getElementById("v-dress").textContent = d.antrekk;
+  document.getElementById("v-dress").firstChild.textContent = d.antrekk;
+  document.getElementById("v-dress-info").textContent = d.antrekkInfo;
   document.getElementById("v-deadline").textContent = d.frist;
   document.getElementById("v-price").textContent = CONFIG.pris;
   document.getElementById("pay-price").textContent = CONFIG.pris;
