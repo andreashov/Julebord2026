@@ -84,7 +84,7 @@ body{
 .app{max-width:var(--maxw); margin:0 auto; padding:0 18px;
      padding-top:calc(18px + env(safe-area-inset-top));
      padding-bottom:calc(28px + env(safe-area-inset-bottom));}
-.stage{position:relative; transition:height .55s var(--ease); overflow-x:clip;}
+.stage{position:relative; overflow-x:clip;}
 .screen{position:absolute; top:0; left:0; width:100%;
   opacity:0; transform:translateX(46px) scale(.98);
   pointer-events:none; transition:opacity .5s var(--ease), transform .5s var(--ease);}
@@ -384,7 +384,10 @@ const CONFIG = {
   var stage = document.getElementById("stage");
   var screens = [0,1].map(function(i){ return document.getElementById("screen-"+i); });
   var current = 0;
+  var stageTimer;
 
+  // Sett høyde uten animasjon (brukes ved last/resize — unngår at en resize
+  // under scroll re-animerer høyden og «spiser» første sveip på mobil).
   function setHeight(){ stage.style.height = screens[current].offsetHeight + "px"; }
 
   function goTo(i){
@@ -401,7 +404,11 @@ const CONFIG = {
     incoming.classList.add("active");
     incoming.style.transform = "";
     current = i;
+    // Skru på høyde-animasjon KUN under skjermbyttet, så rydd den bort etterpå.
+    stage.style.transition = "height .55s var(--ease)";
     setHeight();
+    clearTimeout(stageTimer);
+    stageTimer = setTimeout(function(){ stage.style.transition = ""; }, 620);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
