@@ -18,7 +18,7 @@
 /* ===================== INNSTILLINGER ===================== */
 
 // Overskrifter i regnearket (rekkefølge = kolonnerekkefølge)
-var HEADERS = ['Tidspunkt', 'Navn', 'E-post', 'Mobil', 'Antall', 'Allergi/mat', 'Kommentar', 'Betalt'];
+var HEADERS = ['Tidspunkt', 'Navn', 'E-post', 'Mobil', 'Mat', 'Kommentar', 'Betalt'];
 
 // Valgfritt: få e-postvarsel ved hver påmelding.
 // Sett inn din e-post for å slå det på, f.eks. "andreashov@gmail.com".
@@ -51,8 +51,7 @@ function doPost(e) {
       data.navn || '',
       data.epost || '',
       "'" + (data.telefon || ''),   // apostrof bevarer ledende nuller i telefonnr.
-      data.antall || '1',
-      data.allergi || '',
+      data.mat || '',
       data.kommentar || '',
       ''                            // 'Betalt' — kryss av manuelt når Vipps er mottatt
     ]);
@@ -77,16 +76,14 @@ function doGet() {
 
 function sendNotification(data, naar) {
   try {
-    var antall = data.antall || '1';
-    var emne = 'Ny påmelding julebord: ' + (data.navn || 'Ukjent') + ' (' + antall + ')';
+    var emne = 'Ny påmelding julebord: ' + (data.navn || 'Ukjent');
     var linjer = [
       'Ny påmelding registrert ' + naar.toLocaleString('no-NO'),
       '',
       'Navn:      ' + (data.navn || ''),
       'E-post:    ' + (data.epost || ''),
       'Mobil:     ' + (data.telefon || ''),
-      'Antall:    ' + antall,
-      'Allergi:   ' + (data.allergi || '(ingen oppgitt)'),
+      'Mat:       ' + (data.mat || ''),
       'Kommentar: ' + (data.kommentar || '(ingen)')
     ];
     MailApp.sendEmail(NOTIFY_EMAIL, emne, linjer.join('\n'));

@@ -115,14 +115,11 @@ body{
 /* =========================================================================
    FORSIDE
    ========================================================================= */
-.hero{text-align:center; padding:40px 8px 10px;}
-.badge{
-  display:inline-block; letter-spacing:.26em; text-transform:uppercase;
-  font-size:.68rem; font-weight:600; color:var(--gold);
-  padding:8px 16px; border-radius:999px;
-  background:var(--glass-bg); border:1px solid var(--glass-brd);
-  -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
-}
+.hero{text-align:center; padding:34px 8px 10px;}
+.emblem{display:block; margin:0 auto 12px; filter:drop-shadow(0 0 16px rgba(230,197,132,.6));
+  animation:twinkle 4s ease-in-out infinite;}
+@keyframes twinkle{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.82; transform:scale(.94);}}
+@media (prefers-reduced-motion:reduce){.emblem{animation:none;}}
 .hero h1{
   font-family:var(--font-display); font-weight:700;
   font-size:clamp(3.2rem, 15vw, 5rem); line-height:.94; margin:18px 0 0;
@@ -140,8 +137,9 @@ body{
 .hero p{color:var(--ink-soft); max-width:40ch; margin:16px auto 0; font-size:1.02rem;}
 
 .info{margin-top:22px;}
-.info h2, .form-h{font-family:var(--font-display); font-size:1.6rem; font-weight:600; margin:2px 0 12px; letter-spacing:.3px;}
-.form-h{margin-bottom:4px;}
+.about{color:var(--ink-soft); font-size:1rem; line-height:1.6; margin:2px 0 16px;
+  padding-bottom:18px; border-bottom:1px solid rgba(255,255,255,.07);}
+.form-h{font-family:var(--font-display); font-size:1.65rem; font-weight:600; margin:2px 0 4px; letter-spacing:.3px;}
 .form-sub{color:var(--ink-soft); font-size:.92rem; margin:0 0 20px;}
 .rows{list-style:none; margin:0; padding:0;}
 .rows li{display:flex; gap:15px; align-items:flex-start; padding:15px 0; border-bottom:1px solid rgba(255,255,255,.07);}
@@ -197,6 +195,7 @@ body{
 .field label{display:block; font-size:.7rem; font-weight:700; letter-spacing:.15em; text-transform:uppercase;
   margin-bottom:9px; color:var(--gold); padding-left:2px;}
 .field .hint{color:var(--ink-dim); font-weight:500; letter-spacing:.02em; text-transform:none;}
+.field-note{color:var(--ink-dim); font-size:.82rem; margin:8px 2px 0; letter-spacing:.01em;}
 .req{color:var(--red); -webkit-text-fill-color:var(--red);}
 input, select, textarea{
   width:100%; font-family:inherit; font-size:16px; color:var(--ink); letter-spacing:.2px;
@@ -261,14 +260,17 @@ footer .sn{color:var(--gold); letter-spacing:.45em;}
     <!-- ============== SKJERM 1: FORSIDE ============== -->
     <section class="screen active" id="screen-0" aria-label="Invitasjon">
       <div class="hero">
-        <span class="badge">Du er invitert</span>
+        <svg class="emblem" width="58" height="58" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 1.6l2.7 6.2 6.7.6-5.1 4.4 1.6 6.6L12 16.4 6.1 20l1.6-6.6L2.6 8.4l6.7-.6z"
+                fill="#e6c584" stroke="#f2dca8" stroke-width=".4" stroke-linejoin="round"/>
+        </svg>
         <h1>Julebord<span class="yr">2026</span></h1>
-        <div class="divider">❆</div>
-        <p>En kveld med god mat, godt drikke og det aller beste selskapet. Vi håper du blir med!</p>
+        <div class="divider">🎄</div>
+        <p>Det er tid for årets julebord! Ta på deg julehumøret og bli med på en kveld i god, gammeldags julestemning.</p>
       </div>
 
       <div class="glass pad info">
-        <h2>Detaljer</h2>
+        <p class="about">Vi samler gjengen til julebord på Fredrikstad Skytterhus — med julebuffet, godt drikke og levende musikk utover kvelden. Meld deg på under, så sees vi til jul! 🎅</p>
         <ul class="rows">
           <li><span class="ic">📅</span><span class="txt"><span class="k">Når</span><span class="v" id="v-date">Fredag 20. november 2026<small id="v-time">Kl. 19:00</small></span></span></li>
           <li><span class="ic">📍</span><span class="txt"><span class="k">Hvor</span><span class="v" id="v-place">Fredrikstad Skytterhus<small id="v-address">Ilaveien 134, 1605 Fredrikstad</small></span></span></li>
@@ -312,24 +314,20 @@ footer .sn{color:var(--gold); letter-spacing:.45em;}
             <input id="telefon" name="telefon" type="tel" inputmode="tel" autocomplete="tel" required placeholder="900 00 000" />
           </div>
           <div class="field">
-            <label for="antall">Antall som kommer <span class="hint">(deg + eventuell følge)</span></label>
-            <select id="antall" name="antall">
-              <option value="1">1 — bare meg</option>
-              <option value="2">2 — meg + følge</option>
+            <label for="mat">Mat</label>
+            <select id="mat" name="mat">
+              <option value="Juletallerken">Juletallerken</option>
+              <option value="Uten svin">Uten svin</option>
             </select>
           </div>
           <div class="field">
-            <label for="allergi">Allergier / matpreferanser</label>
-            <input id="allergi" name="allergi" type="text" placeholder="F.eks. vegetar, glutenfri, ingen" />
-          </div>
-          <div class="field">
             <label for="kommentar">Kommentar <span class="hint">(valgfritt)</span></label>
-            <textarea id="kommentar" name="kommentar" placeholder="Noe vi bør vite?"></textarea>
+            <textarea id="kommentar" name="kommentar" placeholder="Har du allergier eller allergener? Skriv det gjerne her."></textarea>
+            <p class="field-note">💬 Har du matallergier eller andre allergener, gi beskjed her.</p>
           </div>
 
           <div class="pay-note">
-            Etter «Til betaling» åpnes <b>Vipps</b>. Legg inn <b>kr <span id="pay-price">500</span></b>
-            <span id="pay-note-2"></span> og skriv <b>navnet ditt</b> som melding.
+            Etter «Til betaling» åpnes <b>Vipps</b>. Legg inn <b>kr <span id="pay-price">500</span></b> og skriv <b>navnet ditt</b> som melding.
           </div>
 
           <button type="submit" class="btn btn-vipps" id="submit-btn">
@@ -420,18 +418,6 @@ const CONFIG = {
   setTimeout(setHeight, 60);
   setHeight();
 
-  /* ---------- Beløp i instruksjonsboksen (oppdateres ved antall) ---------- */
-  var antallSel = document.getElementById("antall");
-  var payNote2 = document.getElementById("pay-note-2");
-
-  function refreshNote(){
-    var two = antallSel.value === "2";
-    document.getElementById("pay-price").textContent = two ? CONFIG.pris * 2 : CONFIG.pris;
-    payNote2.textContent = two ? "(kr " + CONFIG.pris + " × 2)" : "";
-  }
-  antallSel.addEventListener("change", refreshNote);
-  refreshNote();
-
   /* ---------- Innsending ---------- */
   var form = document.getElementById("rsvp-form");
   var btn = document.getElementById("submit-btn");
@@ -448,7 +434,7 @@ const CONFIG = {
 
     var data = {
       navn: navn, epost: epost, telefon: telefon,
-      antall: form.antall.value, allergi: form.allergi.value.trim(),
+      mat: form.mat.value,
       kommentar: form.kommentar.value.trim(), tidspunkt: new Date().toISOString()
     };
     var endpoint = (CONFIG.paameldingEndepunkt || "").trim();
