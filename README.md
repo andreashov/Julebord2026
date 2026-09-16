@@ -1,6 +1,8 @@
 # Julebord 2026 — invitasjonsside
 
-En delikat, mobil-først invitasjonsside der gjestene melder seg på og betaler med Vipps.
+En stilig, mobil-først invitasjonsside i «Liquid Glass»-stil (iOS 26/27) med julevariant:
+frostede glasspaneler, langsomme fargeskyer og diskret snø i bakgrunnen. Gjestene går gjennom
+tre skjermer — **Forside → Påmelding → Betaling** — og betaler med Vipps.
 Siden er gratis å drifte (statisk HTML på GitHub Pages), og påmeldingene havner automatisk
 i et Google Sheet du eier. Gjestene ser aldri regnearket.
 
@@ -50,7 +52,7 @@ at «Bokser» finnes og viser betalingsoversikt — funksjoner endres over tid.
 ```js
 const CONFIG = {
   pris: 500,
-  vippsLenke: "LIM_INN_VIPPS_BOKS_LENKEN_HER",
+  vippsLenke: "https://qr.vipps.no/box/....",   // allerede satt — bytt ut med din egen boks
   paameldingEndepunkt: "LIM_INN_APPS_SCRIPT_URL_HER",
   detaljer: {
     dato:    "Fredag 4. desember 2026",

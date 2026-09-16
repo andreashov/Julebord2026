@@ -5,389 +5,384 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>Julebord 2026 — Invitasjon</title>
 <meta name="description" content="Du er invitert til Julebord 2026. Meld deg på og betal enkelt med Vipps." />
-<meta name="theme-color" content="#0f2419" />
-
-<!-- Open Graph: gir en fin forhåndsvisning når lenken deles i meldinger -->
+<meta name="theme-color" content="#07130d" />
 <meta property="og:title" content="Julebord 2026 — du er invitert" />
 <meta property="og:description" content="Meld deg på og betal med Vipps. Trykk for detaljer." />
 <meta property="og:type" content="website" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet" />
 
 <style>
 /* =========================================================================
-   KONFIGURASJON AV UTSEENDE (farger). Endre fritt.
+   FARGER / TEMA — endre fritt
    ========================================================================= */
 :root{
-  --bg:#0d1f16;            /* dyp granskygge  */
-  --bg-2:#0f2419;          /* litt lysere grønn */
-  --panel:#13291d;         /* kort/paneler */
-  --panel-line:rgba(212,175,110,.22);
-  --ink:#f3ede1;           /* hovedtekst (varm off-white) */
-  --ink-soft:#c9c2b2;      /* dempet tekst */
-  --gold:#d9b978;          /* gull-aksent */
-  --gold-strong:#e7cd94;
-  --burgundy:#7c2b3b;      /* dyp rød aksent */
-  --vipps:#ff5b24;         /* Vipps oransje */
-  --ok:#5fbf8f;
-  --err:#e08a86;
-  --radius:16px;
-  --shadow:0 18px 50px -20px rgba(0,0,0,.65);
-  --maxw:560px;
+  --bg-0:#050d09;
+  --bg-1:#08160f;
+  --ink:#f4efe4;
+  --ink-soft:#c3bdae;
+  --ink-dim:#8f9a8f;
+  --gold:#e6c584;
+  --gold-2:#f2dca8;
+  --red:#b64251;
+  --vipps:#ff5b24;
+  --ok:#6fd6a0;
+  --err:#f0a6a1;
+
+  /* Liquid glass */
+  --glass-bg:rgba(255,255,255,.07);
+  --glass-bg-2:rgba(255,255,255,.045);
+  --glass-brd:rgba(255,255,255,.16);
+  --glass-hi:rgba(255,255,255,.55);
+  --glass-shadow:0 24px 60px -18px rgba(0,0,0,.7);
+  --radius:30px;
+  --radius-sm:18px;
+  --maxw:520px;
+
+  --font-ui:-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+            system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-display:"Playfair Display", Georgia, "Times New Roman", serif;
+
+  --ease:cubic-bezier(.32,.72,0,1);
 }
 
-*{box-sizing:border-box;}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
 html{-webkit-text-size-adjust:100%;}
 body{
   margin:0;
-  background:
-    radial-gradient(1200px 600px at 50% -10%, rgba(217,185,120,.10), transparent 60%),
-    linear-gradient(180deg, var(--bg-2), var(--bg) 40%);
-  color:var(--ink);
-  font-family:"Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  line-height:1.55;
-  -webkit-font-smoothing:antialiased;
   min-height:100dvh;
+  background:var(--bg-0);
+  color:var(--ink);
+  font-family:var(--font-ui);
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
 }
 
-.wrap{
-  max-width:var(--maxw);
-  margin:0 auto;
-  padding:28px 20px calc(48px + env(safe-area-inset-bottom));
+/* =========================================================================
+   BAKGRUNN — langsomme fargeskyer (aurora) + snø, bak alt glass
+   ========================================================================= */
+.bg{position:fixed; inset:0; z-index:-2; overflow:hidden; background:
+  radial-gradient(120% 80% at 50% -10%, #0c2016 0%, var(--bg-1) 45%, var(--bg-0) 100%);}
+.blob{position:absolute; border-radius:50%; filter:blur(60px); opacity:.5; mix-blend-mode:screen; will-change:transform;}
+.blob.b1{width:60vw;height:60vw;left:-15vw;top:-10vh;background:radial-gradient(circle,#1f6b48,transparent 65%);animation:drift1 34s var(--ease) infinite;}
+.blob.b2{width:55vw;height:55vw;right:-18vw;top:18vh;background:radial-gradient(circle,#7d2233,transparent 65%);opacity:.42;animation:drift2 44s var(--ease) infinite;}
+.blob.b3{width:48vw;height:48vw;left:8vw;bottom:-16vh;background:radial-gradient(circle,#b98a3e,transparent 62%);opacity:.32;animation:drift3 52s var(--ease) infinite;}
+@keyframes drift1{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(8vw,6vh) scale(1.12);}}
+@keyframes drift2{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-7vw,10vh) scale(1.08);}}
+@keyframes drift3{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(6vw,-8vh) scale(1.15);}}
+.grain{position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:.03;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+#snow{position:fixed; inset:0; z-index:-1; pointer-events:none;}
+
+/* =========================================================================
+   LAYOUT / SKJERMER (forside → påmelding → betaling)
+   ========================================================================= */
+.app{max-width:var(--maxw); margin:0 auto; padding:0 18px;
+     padding-top:calc(18px + env(safe-area-inset-top));
+     padding-bottom:calc(28px + env(safe-area-inset-bottom));}
+.stage{position:relative; transition:height .55s var(--ease);}
+.screen{position:absolute; top:0; left:0; width:100%;
+  opacity:0; transform:translateX(46px) scale(.98);
+  pointer-events:none; transition:opacity .5s var(--ease), transform .5s var(--ease);}
+.screen.active{opacity:1; transform:none; pointer-events:auto;}
+.screen.left{opacity:0; transform:translateX(-46px) scale(.98);}
+@media (prefers-reduced-motion:reduce){
+  .screen{transition:opacity .01s;}
+  .blob{animation:none;}
 }
 
-/* ---------- Toppseksjon / hero ---------- */
-.hero{
-  text-align:center;
-  padding:22px 8px 8px;
-}
-.eyebrow{
-  letter-spacing:.28em;
-  text-transform:uppercase;
-  font-size:.72rem;
-  color:var(--gold);
-  font-weight:600;
-  margin-bottom:14px;
-}
-.title{
-  font-family:"Cormorant Garamond", Georgia, serif;
-  font-weight:700;
-  font-size:clamp(2.9rem, 13vw, 4.4rem);
-  line-height:.98;
-  margin:0;
-  letter-spacing:.5px;
-}
-.title .year{
-  display:block;
-  color:var(--gold-strong);
-  font-style:italic;
-  font-weight:600;
-}
-.ornament{
-  display:flex; align-items:center; justify-content:center; gap:12px;
-  margin:18px auto 6px; color:var(--gold); opacity:.85;
-}
-.ornament::before,.ornament::after{
-  content:""; height:1px; width:56px;
-  background:linear-gradient(90deg,transparent,var(--gold));
-}
-.ornament::after{background:linear-gradient(90deg,var(--gold),transparent);}
-.lead{
-  color:var(--ink-soft);
-  font-size:1.02rem;
-  max-width:44ch;
-  margin:14px auto 0;
-}
-
-/* ---------- Kort ---------- */
-.card{
-  background:linear-gradient(180deg, var(--panel), #112418);
-  border:1px solid var(--panel-line);
+/* =========================================================================
+   GLASS-KOMPONENTER
+   ========================================================================= */
+.glass{
+  position:relative;
+  background:linear-gradient(180deg, var(--glass-bg), var(--glass-bg-2));
+  -webkit-backdrop-filter:blur(26px) saturate(175%);
+  backdrop-filter:blur(26px) saturate(175%);
+  border:1px solid var(--glass-brd);
   border-radius:var(--radius);
-  box-shadow:var(--shadow);
-  padding:22px 20px;
-  margin-top:22px;
+  box-shadow:var(--glass-shadow), inset 0 1px 0 var(--glass-hi), inset 0 -1px 1px rgba(0,0,0,.35);
+  overflow:hidden;
 }
-.card h2{
-  font-family:"Cormorant Garamond", Georgia, serif;
-  font-size:1.7rem;
-  margin:0 0 14px;
-  font-weight:600;
-  letter-spacing:.3px;
-}
+/* Spekulær glans langs toppen */
+.glass::before{content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  background:linear-gradient(180deg, rgba(255,255,255,.14), transparent 22%);}
+.pad{padding:22px 20px;}
 
-/* ---------- Detaljer ---------- */
-.details{list-style:none; margin:0; padding:0;}
-.details li{
-  display:flex; gap:14px; align-items:flex-start;
-  padding:12px 0;
-  border-bottom:1px dashed rgba(212,175,110,.16);
+/* =========================================================================
+   FORSIDE
+   ========================================================================= */
+.hero{text-align:center; padding:40px 8px 10px;}
+.badge{
+  display:inline-block; letter-spacing:.26em; text-transform:uppercase;
+  font-size:.68rem; font-weight:600; color:var(--gold);
+  padding:8px 16px; border-radius:999px;
+  background:var(--glass-bg); border:1px solid var(--glass-brd);
+  -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
 }
-.details li:last-child{border-bottom:0;}
-.details .ic{
-  flex:0 0 auto; width:34px; height:34px;
-  display:grid; place-items:center;
-  border-radius:9px;
-  background:rgba(217,185,120,.12);
-  color:var(--gold-strong);
+.hero h1{
+  font-family:var(--font-display); font-weight:700;
+  font-size:clamp(3.2rem, 15vw, 5rem); line-height:.94; margin:18px 0 0;
+  letter-spacing:.5px;
+  background:linear-gradient(180deg,#fff 0%, #f4e8cf 55%, var(--gold) 100%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  text-shadow:0 2px 30px rgba(230,197,132,.18);
 }
-.details .k{font-size:.74rem; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); }
-.details .v{font-size:1.05rem; color:var(--ink); font-weight:500;}
-.details .v small{display:block; color:var(--ink-soft); font-weight:400; font-size:.85rem; margin-top:2px;}
+.hero .yr{display:block; font-style:italic; font-weight:600; font-size:.62em; color:var(--gold-2);
+  -webkit-text-fill-color:var(--gold-2);}
+.divider{display:flex; align-items:center; justify-content:center; gap:12px; color:var(--gold); margin:18px auto 0; opacity:.9;}
+.divider::before,.divider::after{content:""; height:1px; width:52px;}
+.divider::before{background:linear-gradient(90deg,transparent,var(--gold));}
+.divider::after{background:linear-gradient(90deg,var(--gold),transparent);}
+.hero p{color:var(--ink-soft); max-width:40ch; margin:16px auto 0; font-size:1.02rem;}
 
-.price-badge{
-  display:inline-flex; align-items:baseline; gap:8px;
-  background:rgba(124,43,59,.28);
-  border:1px solid rgba(217,185,120,.3);
-  color:var(--gold-strong);
-  padding:6px 14px; border-radius:999px;
-  font-weight:600; margin-top:2px;
-}
-.price-badge b{font-size:1.15rem; color:var(--ink);}
+.info{margin-top:22px;}
+.info h2, .form-h{font-family:var(--font-display); font-size:1.5rem; font-weight:600; margin:2px 0 14px;}
+.rows{list-style:none; margin:0; padding:0;}
+.rows li{display:flex; gap:14px; align-items:center; padding:13px 0; border-bottom:1px solid rgba(255,255,255,.08);}
+.rows li:last-child{border-bottom:0;}
+.rows .ic{flex:0 0 auto; width:40px; height:40px; display:grid; place-items:center; font-size:1.15rem;
+  border-radius:12px; background:var(--glass-bg-2); border:1px solid var(--glass-brd);}
+.rows .k{font-size:.7rem; letter-spacing:.13em; text-transform:uppercase; color:var(--gold);}
+.rows .v{font-size:1.05rem; font-weight:500; color:var(--ink);}
+.rows .v small{display:block; color:var(--ink-dim); font-weight:400; font-size:.85rem;}
+.price-pill{display:inline-flex; align-items:baseline; gap:6px; color:var(--gold-2); font-weight:700; font-size:1.15rem;}
+.price-pill span{font-size:.8rem; color:var(--ink-dim); font-weight:500;}
 
-/* ---------- Skjema ---------- */
-form{margin-top:4px;}
-.field{margin-bottom:16px;}
-.field label{
-  display:block; font-size:.82rem; font-weight:600;
-  color:var(--ink); margin-bottom:7px;
-}
-.field .hint{color:var(--ink-soft); font-weight:400;}
+/* =========================================================================
+   KNAPPER (glass + kapsel)
+   ========================================================================= */
+.btn{display:flex; align-items:center; justify-content:center; gap:9px;
+  width:100%; border:0; cursor:pointer; font-family:inherit; font-weight:600;
+  font-size:1.06rem; padding:16px 20px; border-radius:18px;
+  transition:transform .12s var(--ease), filter .2s, box-shadow .2s;}
+.btn:active{transform:scale(.975);}
+.btn-gold{
+  color:#241a08;
+  background:linear-gradient(180deg,var(--gold-2),var(--gold));
+  box-shadow:0 10px 26px -10px rgba(230,197,132,.7), inset 0 1px 0 rgba(255,255,255,.6);}
+.btn-glass{
+  color:var(--ink);
+  background:var(--glass-bg); border:1px solid var(--glass-brd);
+  -webkit-backdrop-filter:blur(18px) saturate(160%); backdrop-filter:blur(18px) saturate(160%);
+  box-shadow:inset 0 1px 0 var(--glass-hi);}
+.btn-vipps{color:#fff; background:linear-gradient(180deg,#ff6a37,var(--vipps));
+  box-shadow:0 10px 26px -10px rgba(255,91,36,.75), inset 0 1px 0 rgba(255,255,255,.4);}
+.btn:disabled{opacity:.55; cursor:not-allowed; box-shadow:none;}
+.cta-wrap{margin-top:22px;}
+.cta-sub{text-align:center; color:var(--ink-dim); font-size:.82rem; margin:12px 0 0;}
+
+/* =========================================================================
+   NAV (tilbake-knapp)
+   ========================================================================= */
+.topbar{display:flex; align-items:center; min-height:44px; margin:2px 0 6px;}
+.back{display:inline-flex; align-items:center; gap:6px; background:transparent; border:0;
+  color:var(--gold-2); font-family:inherit; font-size:1rem; font-weight:500; cursor:pointer; padding:8px 6px 8px 0;}
+.back:active{opacity:.6;}
+.step-dots{margin-left:auto; display:flex; gap:6px;}
+.dot{width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.22); transition:background .3s, width .3s;}
+.dot.on{background:var(--gold); width:20px; border-radius:4px;}
+
+/* =========================================================================
+   SKJEMA
+   ========================================================================= */
+.field{margin-bottom:15px;}
+.field label{display:block; font-size:.8rem; font-weight:600; margin-bottom:7px; color:var(--ink);}
+.field .hint{color:var(--ink-dim); font-weight:400;}
 .req{color:var(--gold);}
 input, select, textarea{
-  width:100%;
-  background:#0c1c13;
-  border:1px solid rgba(212,175,110,.28);
-  color:var(--ink);
-  border-radius:11px;
-  padding:13px 14px;
-  font-size:1rem; /* 16px+ hindrer zoom på iOS */
-  font-family:inherit;
-  transition:border-color .15s, box-shadow .15s;
-  -webkit-appearance:none; appearance:none;
-}
-select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='none' stroke='%23d9b978' stroke-width='2'><path d='M4 7l5 5 5-5'/></svg>");background-repeat:no-repeat;background-position:right 12px center;padding-right:38px;}
-input:focus, select:focus, textarea:focus{
-  outline:none;
-  border-color:var(--gold);
-  box-shadow:0 0 0 3px rgba(217,185,120,.15);
-}
-textarea{min-height:84px; resize:vertical;}
-
-.btn{
-  width:100%;
-  border:0; cursor:pointer;
-  border-radius:12px;
-  padding:15px 18px;
-  font-size:1.05rem; font-weight:600;
-  font-family:inherit;
-  transition:transform .06s ease, filter .15s, background .15s;
-}
-.btn:active{transform:translateY(1px);}
-.btn-primary{
-  background:linear-gradient(180deg,var(--gold-strong),var(--gold));
-  color:#2a1c0a;
-}
-.btn-primary:disabled{opacity:.6; cursor:not-allowed; filter:saturate(.6);}
-.btn-vipps{
-  background:var(--vipps); color:#fff;
-  display:flex; align-items:center; justify-content:center; gap:10px;
-}
-.btn-vipps:hover{filter:brightness(1.05);}
-
-.form-note{font-size:.8rem; color:var(--ink-soft); margin-top:4px; text-align:center;}
-
-.msg{
-  border-radius:11px; padding:12px 14px; margin-top:14px;
-  font-size:.92rem; display:none;
-}
+  width:100%; font-family:inherit; font-size:16px; color:var(--ink);
+  background:rgba(0,0,0,.28); border:1px solid var(--glass-brd);
+  border-radius:14px; padding:14px 15px; -webkit-appearance:none; appearance:none;
+  transition:border-color .18s, box-shadow .18s, background .18s;}
+input::placeholder, textarea::placeholder{color:#7d857d;}
+select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='none' stroke='%23e6c584' stroke-width='2'><path d='M4 7l5 5 5-5'/></svg>");background-repeat:no-repeat;background-position:right 13px center;padding-right:40px;}
+input:focus, select:focus, textarea:focus{outline:none; border-color:var(--gold);
+  background:rgba(0,0,0,.34); box-shadow:0 0 0 4px rgba(230,197,132,.14);}
+textarea{min-height:80px; resize:vertical;}
+.msg{border-radius:14px; padding:12px 14px; margin-top:12px; font-size:.9rem; display:none;}
 .msg.show{display:block;}
-.msg.err{background:rgba(224,138,134,.12); border:1px solid rgba(224,138,134,.4); color:var(--err);}
+.msg.err{background:rgba(240,166,161,.1); border:1px solid rgba(240,166,161,.4); color:var(--err);}
 
-/* ---------- Betalingssteg (vises etter påmelding) ---------- */
-#pay{display:none;}
-#pay.show{display:block; animation:rise .4s ease both;}
-@keyframes rise{from{opacity:0; transform:translateY(10px);}to{opacity:1; transform:none;}}
-.pay-hero{text-align:center;}
-.check{
-  width:56px;height:56px;margin:0 auto 6px;border-radius:50%;
-  background:rgba(95,191,143,.15);border:1px solid rgba(95,191,143,.5);
-  display:grid;place-items:center;color:var(--ok);
-}
-.steps{counter-reset:s; list-style:none; padding:0; margin:16px 0 20px;}
-.steps li{
-  counter-increment:s; position:relative;
-  padding:6px 0 6px 40px; color:var(--ink-soft); font-size:.95rem;
-}
-.steps li::before{
-  content:counter(s); position:absolute; left:0; top:4px;
-  width:26px;height:26px;border-radius:50%;
-  background:rgba(217,185,120,.14); color:var(--gold-strong);
-  display:grid; place-items:center; font-size:.8rem; font-weight:700;
-}
+/* =========================================================================
+   BETALING
+   ========================================================================= */
+.pay-hero{text-align:center; padding:6px 0 2px;}
+.check{width:64px; height:64px; margin:0 auto 10px; border-radius:50%;
+  display:grid; place-items:center; color:#06130c;
+  background:linear-gradient(180deg,#8ff0bd,var(--ok));
+  box-shadow:0 12px 30px -10px rgba(111,214,160,.6), inset 0 1px 0 rgba(255,255,255,.6);}
+.pay-hero h2{font-family:var(--font-display); font-size:1.9rem; margin:2px 0 6px;}
+.pay-hero p{color:var(--ink-soft); margin:0;}
+.amount{font-family:var(--font-display); font-size:2.6rem; font-weight:700; text-align:center; margin:18px 0 4px;
+  background:linear-gradient(180deg,#fff,var(--gold)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+.amount .cur{font-size:1rem; -webkit-text-fill-color:var(--ink-dim); color:var(--ink-dim); font-family:var(--font-ui); font-weight:600;}
+.steps{counter-reset:s; list-style:none; padding:0; margin:8px 0 18px;}
+.steps li{counter-increment:s; position:relative; padding:8px 0 8px 42px; color:var(--ink-soft); font-size:.95rem;}
+.steps li::before{content:counter(s); position:absolute; left:0; top:6px; width:28px; height:28px; border-radius:50%;
+  background:var(--glass-bg); border:1px solid var(--glass-brd); color:var(--gold-2);
+  display:grid; place-items:center; font-size:.82rem; font-weight:700;}
 .steps b{color:var(--ink);}
-.ref-tip{
-  background:rgba(124,43,59,.22);
-  border:1px solid rgba(217,185,120,.28);
-  border-radius:11px; padding:12px 14px; margin-top:6px;
-  font-size:.9rem; color:var(--ink);
-}
+.ref-tip{background:rgba(182,66,81,.16); border:1px solid rgba(230,197,132,.28); border-radius:14px;
+  padding:12px 14px; font-size:.9rem; color:var(--ink); margin-bottom:16px;}
 
-footer{
-  text-align:center; color:var(--ink-soft); font-size:.8rem;
-  margin-top:30px; opacity:.8;
-}
-footer .snow{color:var(--gold); letter-spacing:.4em;}
-
-/* Redusert bevegelse */
-@media (prefers-reduced-motion: reduce){
-  *{animation:none !important;}
-}
+footer{text-align:center; color:var(--ink-dim); font-size:.8rem; margin-top:26px;}
+footer .sn{color:var(--gold); letter-spacing:.45em;}
 </style>
 </head>
 <body>
-<main class="wrap">
 
-  <!-- ================= HERO ================= -->
-  <header class="hero">
-    <div class="eyebrow">Du er hjertelig invitert</div>
-    <h1 class="title">Julebord<span class="year">2026</span></h1>
-    <div class="ornament">❆</div>
-    <p class="lead" id="lead-text">
-      Bli med på årets hyggeligste kveld — god mat, godt drikke og enda bedre selskap.
-      Meld deg på her, så ordner vi resten.
-    </p>
-  </header>
+<!-- Bakgrunn -->
+<div class="bg" aria-hidden="true">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+</div>
+<div class="grain" aria-hidden="true"></div>
+<canvas id="snow" aria-hidden="true"></canvas>
 
-  <!-- ================= DETALJER ================= -->
-  <section class="card" aria-labelledby="detaljer-h">
-    <h2 id="detaljer-h">Detaljer</h2>
-    <ul class="details">
-      <li>
-        <span class="ic" aria-hidden="true">📅</span>
-        <span><span class="k">Når</span><span class="v" id="d-date">Fredag 4. desember 2026<small id="d-time">Kl. 19:00</small></span></span>
-      </li>
-      <li>
-        <span class="ic" aria-hidden="true">📍</span>
-        <span><span class="k">Hvor</span><span class="v" id="d-place">Sted kommer<small id="d-address">Adresse legges inn</small></span></span>
-      </li>
-      <li>
-        <span class="ic" aria-hidden="true">👗</span>
-        <span><span class="k">Antrekk</span><span class="v" id="d-dress">Pent / mørk dress</span></span>
-      </li>
-      <li>
-        <span class="ic" aria-hidden="true">💳</span>
-        <span><span class="k">Pris pr. person</span>
-          <span class="v"><span class="price-badge">kr <b id="d-price">500</b></span></span>
-        </span>
-      </li>
-      <li>
-        <span class="ic" aria-hidden="true">⏳</span>
-        <span><span class="k">Påmeldingsfrist</span><span class="v" id="d-deadline">15. november 2026</span></span>
-      </li>
-    </ul>
-  </section>
+<main class="app">
+  <div class="stage" id="stage">
 
-  <!-- ================= PÅMELDING ================= -->
-  <section class="card" id="rsvp-card" aria-labelledby="rsvp-h">
-    <h2 id="rsvp-h">Meld deg på</h2>
-    <form id="rsvp-form" novalidate>
-      <div class="field">
-        <label for="navn">Navn <span class="req">*</span></label>
-        <input id="navn" name="navn" type="text" autocomplete="name" required placeholder="Ola Nordmann" />
+    <!-- ============== SKJERM 1: FORSIDE ============== -->
+    <section class="screen active" id="screen-0" aria-label="Invitasjon">
+      <div class="hero">
+        <span class="badge">Du er invitert</span>
+        <h1>Julebord<span class="yr">2026</span></h1>
+        <div class="divider">❆</div>
+        <p>En kveld med god mat, godt drikke og det aller beste selskapet. Vi håper du blir med!</p>
       </div>
 
-      <div class="field">
-        <label for="epost">E-post <span class="req">*</span></label>
-        <input id="epost" name="epost" type="email" inputmode="email" autocomplete="email" required placeholder="ola@example.com" />
+      <div class="glass pad info">
+        <h2>Detaljer</h2>
+        <ul class="rows">
+          <li><span class="ic">📅</span><span><span class="k">Når</span><span class="v" id="v-date">Fredag 4. desember 2026<small id="v-time">Kl. 19:00</small></span></span></li>
+          <li><span class="ic">📍</span><span><span class="k">Hvor</span><span class="v" id="v-place">Sted kommer<small id="v-address">Adresse legges inn</small></span></span></li>
+          <li><span class="ic">👔</span><span><span class="k">Antrekk</span><span class="v" id="v-dress">Pent / mørk dress</span></span></li>
+          <li><span class="ic">💳</span><span><span class="k">Pris pr. person</span><span class="v"><span class="price-pill"><span>kr</span><b id="v-price">500</b></span></span></span></li>
+          <li><span class="ic">⏳</span><span><span class="k">Påmeldingsfrist</span><span class="v" id="v-deadline">15. november 2026</span></span></li>
+        </ul>
       </div>
 
-      <div class="field">
-        <label for="telefon">Mobil <span class="hint">(brukes for å matche Vipps-betaling)</span> <span class="req">*</span></label>
-        <input id="telefon" name="telefon" type="tel" inputmode="tel" autocomplete="tel" required placeholder="900 00 000" />
+      <div class="cta-wrap">
+        <button class="btn btn-gold" id="to-form" type="button">Til påmelding
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+        <p class="cta-sub">Ca. 2 minutter — påmelding og betaling med Vipps.</p>
+      </div>
+    </section>
+
+    <!-- ============== SKJERM 2: PÅMELDING ============== -->
+    <section class="screen" id="screen-1" aria-label="Påmelding">
+      <div class="topbar">
+        <button class="back" type="button" data-back>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+          Tilbake
+        </button>
+        <div class="step-dots" aria-hidden="true"><span class="dot"></span><span class="dot on"></span><span class="dot"></span></div>
       </div>
 
-      <div class="field">
-        <label for="antall">Antall som kommer <span class="hint">(deg + eventuell følge)</span></label>
-        <select id="antall" name="antall">
-          <option value="1">1 — bare meg</option>
-          <option value="2">2 — meg + følge</option>
-        </select>
+      <div class="glass pad">
+        <h2 class="form-h">Meld deg på</h2>
+        <form id="rsvp-form" novalidate>
+          <div class="field">
+            <label for="navn">Navn <span class="req">*</span></label>
+            <input id="navn" name="navn" type="text" autocomplete="name" required placeholder="Ola Nordmann" />
+          </div>
+          <div class="field">
+            <label for="epost">E-post <span class="req">*</span></label>
+            <input id="epost" name="epost" type="email" inputmode="email" autocomplete="email" required placeholder="ola@example.com" />
+          </div>
+          <div class="field">
+            <label for="telefon">Mobil <span class="hint">(for å matche Vipps-betaling)</span> <span class="req">*</span></label>
+            <input id="telefon" name="telefon" type="tel" inputmode="tel" autocomplete="tel" required placeholder="900 00 000" />
+          </div>
+          <div class="field">
+            <label for="antall">Antall som kommer <span class="hint">(deg + eventuell følge)</span></label>
+            <select id="antall" name="antall">
+              <option value="1">1 — bare meg</option>
+              <option value="2">2 — meg + følge</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="allergi">Allergier / matpreferanser</label>
+            <input id="allergi" name="allergi" type="text" placeholder="F.eks. vegetar, glutenfri, ingen" />
+          </div>
+          <div class="field">
+            <label for="kommentar">Kommentar <span class="hint">(valgfritt)</span></label>
+            <textarea id="kommentar" name="kommentar" placeholder="Noe vi bør vite?"></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-gold" id="submit-btn">Til betaling
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+          <div class="msg err" id="form-msg" role="alert"></div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============== SKJERM 3: BETALING ============== -->
+    <section class="screen" id="screen-2" aria-label="Betaling">
+      <div class="topbar">
+        <button class="back" type="button" data-back>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+          Tilbake
+        </button>
+        <div class="step-dots" aria-hidden="true"><span class="dot"></span><span class="dot"></span><span class="dot on"></span></div>
       </div>
 
-      <div class="field">
-        <label for="allergi">Allergier / matpreferanser</label>
-        <input id="allergi" name="allergi" type="text" placeholder="F.eks. vegetar, glutenfri, ingen" />
+      <div class="glass pad">
+        <div class="pay-hero">
+          <div class="check" aria-hidden="true">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          </div>
+          <h2>Påmelding registrert</h2>
+          <p>Ett steg igjen — betal for å sikre plassen.</p>
+        </div>
+
+        <div class="amount"><span class="cur">kr</span> <span id="pay-amount">500</span></div>
+
+        <ol class="steps">
+          <li>Trykk <b>Betal med Vipps</b> under.</li>
+          <li>Beløpet er <b>kr <span id="pay-price">500</span></b> pr. person.</li>
+          <li>Skriv <b>navnet ditt</b> som melding, så finner vi deg igjen.</li>
+        </ol>
+
+        <div class="ref-tip" id="ref-tip" style="display:none;">
+          💡 Betaler du for to? Legg inn <b>kr <span id="pay-price-2">1000</span></b> og skriv begge navn.
+        </div>
+
+        <a id="vipps-btn" class="btn btn-vipps" href="#" target="_blank" rel="noopener">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm4.2 7.6c-.9 2.3-2.6 3.9-4.8 3.9-1.5 0-2.4-.8-3.2-2.1-.3-.5-.1-1 .4-1.3.5-.3 1-.1 1.3.4.4.7.8 1 1.5 1 1 0 1.9-.8 2.5-2.3.2-.6.8-.9 1.4-.6.5.2.8.8.5 1z"/></svg>
+          Betal med Vipps
+        </a>
       </div>
 
-      <div class="field">
-        <label for="kommentar">Kommentar <span class="hint">(valgfritt)</span></label>
-        <textarea id="kommentar" name="kommentar" placeholder="Noe vi bør vite?"></textarea>
-      </div>
+      <footer>
+        <div class="sn">❆ ❆ ❆</div>
+        <p>Vi gleder oss til å se deg!<br/>Spørsmål? Ta kontakt med arrangøren.</p>
+      </footer>
+    </section>
 
-      <button type="submit" class="btn btn-primary" id="submit-btn">Send påmelding</button>
-      <p class="form-note">Etter påmelding får du opp betaling med Vipps.</p>
-      <div class="msg err" id="form-msg" role="alert"></div>
-    </form>
-  </section>
-
-  <!-- ================= BETALING (vises etter innsending) ================= -->
-  <section class="card" id="pay" aria-labelledby="pay-h">
-    <div class="pay-hero">
-      <div class="check" aria-hidden="true">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
-      </div>
-      <h2 id="pay-h" style="margin-top:6px;">Påmelding registrert!</h2>
-      <p style="color:var(--ink-soft); margin-top:4px;">Ett steg igjen — betal for å sikre plassen din.</p>
-    </div>
-
-    <ol class="steps">
-      <li>Trykk på <b>Betal med Vipps</b>-knappen under.</li>
-      <li>Beløpet er <b>kr <span id="pay-price">500</span></b> pr. person.</li>
-      <li>Skriv <b>navnet ditt</b> som melding, så vi finner deg igjen.</li>
-    </ol>
-
-    <div class="ref-tip" id="ref-tip">
-      💡 Betaler du for to? Legg inn <b>kr <span id="pay-price-2">1000</span></b> og skriv begge navn.
-    </div>
-
-    <a id="vipps-btn" class="btn btn-vipps" href="#" target="_blank" rel="noopener" style="margin-top:16px;">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm4.2 7.6c-.9 2.3-2.6 3.9-4.8 3.9-1.5 0-2.4-.8-3.2-2.1-.3-.5-.1-1 .4-1.3.5-.3 1-.1 1.3.4.4.7.8 1 1.5 1 1 0 1.9-.8 2.5-2.3.2-.6.8-.9 1.4-.6.5.2.8.8.5 1z"/></svg>
-      Betal med Vipps
-    </a>
-    <p class="form-note" id="vipps-fallback" style="margin-top:12px; display:none;">
-      Får du ikke opp Vipps? <a href="#" id="vipps-link-alt" style="color:var(--gold-strong);">Åpne lenken her</a>.
-    </p>
-  </section>
-
-  <footer>
-    <div class="snow">❆ ❆ ❆</div>
-    <p>Vi gleder oss til å se deg!<br/>Spørsmål? Ta kontakt med arrangøren.</p>
-  </footer>
-
+  </div>
 </main>
 
 <script>
 /* =========================================================================
-   ⚙️  KONFIGURASJON — fyll inn dine verdier her. Ingen koding nødvendig.
-   Se README.md for steg-for-steg oppskrift.
+   ⚙️  KONFIGURASJON — fyll inn dine verdier her.
    ========================================================================= */
 const CONFIG = {
-  // Pris pr. person i kroner:
   pris: 500,
 
-  // Lenken til Vipps-boksen din (eller Vipps-betalingslenke).
-  // Hentes fra Vipps-appen: Bokser → din boks → Del → Kopier lenke.
-  // La stå tom ("") inntil du har den — knappen deaktiveres da automatisk.
-  vippsLenke: "",
+  // Lenke til Vipps-boksen. Byttes ut senere.
+  vippsLenke: "https://qr.vipps.no/box/6cde2ed7-077d-4198-adc7-372523cb6302/pay-in",
 
-  // URL til Google Apps Script (Web App) som lagrer påmeldinger i regnearket ditt.
-  // Se README.md. La stå tom ("") for å teste siden uten lagring.
+  // URL til Google Apps Script (Web App). La stå tom ("") for å teste uten lagring.
   paameldingEndepunkt: "",
 
-  // Arrangementsdetaljer (valgfritt å endre her — kan også endres direkte i HTML over).
   detaljer: {
     dato:    "Fredag 4. desember 2026",
     tid:     "Kl. 19:00",
@@ -401,119 +396,156 @@ const CONFIG = {
 /* ------------------------------------------------------------------ */
 (function () {
   "use strict";
-
-  // Fyll inn detaljer fra CONFIG (hvis endret)
-  const d = CONFIG.detaljer;
-  document.getElementById("d-date").firstChild.textContent = d.dato;
-  document.getElementById("d-time").textContent = d.tid;
-  document.getElementById("d-place").firstChild.textContent = d.sted;
-  document.getElementById("d-address").textContent = d.adresse;
-  document.getElementById("d-dress").textContent = d.antrekk;
-  document.getElementById("d-deadline").textContent = d.frist;
-
-  // Priser
-  document.getElementById("d-price").textContent = CONFIG.pris;
+  var d = CONFIG.detaljer;
+  document.getElementById("v-date").firstChild.textContent = d.dato;
+  document.getElementById("v-time").textContent = d.tid;
+  document.getElementById("v-place").firstChild.textContent = d.sted;
+  document.getElementById("v-address").textContent = d.adresse;
+  document.getElementById("v-dress").textContent = d.antrekk;
+  document.getElementById("v-deadline").textContent = d.frist;
+  document.getElementById("v-price").textContent = CONFIG.pris;
   document.getElementById("pay-price").textContent = CONFIG.pris;
+  document.getElementById("pay-amount").textContent = CONFIG.pris;
   document.getElementById("pay-price-2").textContent = CONFIG.pris * 2;
 
-  const form = document.getElementById("rsvp-form");
-  const btn = document.getElementById("submit-btn");
-  const msg = document.getElementById("form-msg");
-  const payCard = document.getElementById("pay");
-  const rsvpCard = document.getElementById("rsvp-card");
-  const vippsBtn = document.getElementById("vipps-btn");
-  const vippsLinkAlt = document.getElementById("vipps-link-alt");
-  const vippsFallback = document.getElementById("vipps-fallback");
-  const antallSel = document.getElementById("antall");
-  const refTip = document.getElementById("ref-tip");
+  /* ---------- Skjerm-navigasjon ---------- */
+  var stage = document.getElementById("stage");
+  var screens = [0,1,2].map(function(i){ return document.getElementById("screen-"+i); });
+  var current = 0;
 
-  function showErr(text) {
-    msg.textContent = text;
-    msg.classList.add("show");
+  function setHeight(){ stage.style.height = screens[current].offsetHeight + "px"; }
+
+  function goTo(i){
+    if (i === current) return;
+    var incoming = screens[i], outgoing = screens[current];
+    outgoing.classList.remove("active");
+    outgoing.classList.toggle("left", i > current); // gå framover: forrige glir til venstre
+    incoming.classList.remove("left");
+    // Start posisjon for innkommende fra riktig side
+    incoming.style.transition = "none";
+    incoming.style.transform = (i > current ? "translateX(46px)" : "translateX(-46px)") + " scale(.98)";
+    incoming.offsetHeight; // reflow
+    incoming.style.transition = "";
+    incoming.classList.add("active");
+    incoming.style.transform = "";
+    current = i;
+    setHeight();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
-  function clearErr() { msg.classList.remove("show"); msg.textContent = ""; }
 
-  function setVippsLink() {
-    const link = (CONFIG.vippsLenke || "").trim();
-    if (link) {
+  document.getElementById("to-form").addEventListener("click", function(){ goTo(1); });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-back]"), function(b){
+    b.addEventListener("click", function(){ goTo(current - 1); });
+  });
+
+  window.addEventListener("resize", setHeight);
+  window.addEventListener("load", setHeight);
+  // Juster høyde når fontene er lastet (Playfair kan endre høyden)
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(setHeight);
+  setTimeout(setHeight, 60);
+  setHeight();
+
+  /* ---------- Vipps-lenke + referanse-tips ---------- */
+  var vippsBtn = document.getElementById("vipps-btn");
+  var refTip = document.getElementById("ref-tip");
+  var antallSel = document.getElementById("antall");
+
+  function refreshPay(){
+    var link = (CONFIG.vippsLenke || "").trim();
+    if (link){
       vippsBtn.setAttribute("href", link);
-      if (vippsLinkAlt) vippsLinkAlt.setAttribute("href", link);
-      if (vippsFallback) vippsFallback.style.display = "block";
+      vippsBtn.style.pointerEvents = "";
+      vippsBtn.style.opacity = "";
     } else {
       vippsBtn.setAttribute("href", "#");
-      vippsBtn.style.opacity = ".6";
       vippsBtn.style.pointerEvents = "none";
-      vippsBtn.textContent = "Vipps-lenke ikke satt opp ennå";
+      vippsBtn.style.opacity = ".55";
     }
-    // Vis riktig referanse-tips basert på valgt antall
-    refTip.style.display = (antallSel.value === "2") ? "block" : "none";
+    var two = antallSel.value === "2";
+    refTip.style.display = two ? "block" : "none";
+    document.getElementById("pay-amount").textContent = two ? CONFIG.pris * 2 : CONFIG.pris;
   }
-  antallSel.addEventListener("change", setVippsLink);
-  setVippsLink();
+  antallSel.addEventListener("change", refreshPay);
+  refreshPay();
 
-  form.addEventListener("submit", async function (e) {
+  /* ---------- Innsending ---------- */
+  var form = document.getElementById("rsvp-form");
+  var btn = document.getElementById("submit-btn");
+  var msg = document.getElementById("form-msg");
+  function showErr(t){ msg.textContent = t; msg.classList.add("show"); }
+  function clrErr(){ msg.classList.remove("show"); msg.textContent = ""; }
+
+  form.addEventListener("submit", async function(e){
     e.preventDefault();
-    clearErr();
+    clrErr();
+    var navn = form.navn.value.trim(), epost = form.epost.value.trim(), telefon = form.telefon.value.trim();
+    if (!navn || !epost || !telefon){ showErr("Fyll inn navn, e-post og mobil."); return; }
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(epost)){ showErr("Sjekk at e-postadressen er riktig."); return; }
 
-    // Enkel validering
-    const navn = form.navn.value.trim();
-    const epost = form.epost.value.trim();
-    const telefon = form.telefon.value.trim();
-    if (!navn || !epost || !telefon) {
-      showErr("Fyll inn navn, e-post og mobil.");
-      return;
-    }
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(epost)) {
-      showErr("Sjekk at e-postadressen er riktig.");
-      return;
-    }
-
-    const data = {
-      navn: navn,
-      epost: epost,
-      telefon: telefon,
-      antall: form.antall.value,
-      allergi: form.allergi.value.trim(),
-      kommentar: form.kommentar.value.trim(),
-      tidspunkt: new Date().toISOString()
+    var data = {
+      navn: navn, epost: epost, telefon: telefon,
+      antall: form.antall.value, allergi: form.allergi.value.trim(),
+      kommentar: form.kommentar.value.trim(), tidspunkt: new Date().toISOString()
     };
-
-    const endpoint = (CONFIG.paameldingEndepunkt || "").trim();
-
-    btn.disabled = true;
-    btn.textContent = "Sender …";
+    var endpoint = (CONFIG.paameldingEndepunkt || "").trim();
+    btn.disabled = true; btn.textContent = "Sender …";
 
     try {
-      if (endpoint) {
-        // text/plain unngår CORS-preflight mot Google Apps Script
-        const res = await fetch(endpoint, {
+      if (endpoint){
+        var res = await fetch(endpoint, {
           method: "POST",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify(data)
         });
         if (!res.ok) throw new Error("HTTP " + res.status);
-        // Apps Script svarer med { result: "ok" }
-        let out = {};
-        try { out = await res.json(); } catch (_) { /* tolerer tomt svar */ }
+        var out = {}; try { out = await res.json(); } catch(_){}
         if (out.result && out.result !== "ok") throw new Error(out.message || "Ukjent feil");
       } else {
-        // Ingen endepunkt satt opp ennå — la påmeldingen gå videre lokalt (testmodus)
         console.info("[Testmodus] Ingen paameldingEndepunkt satt. Data:", data);
       }
-
-      // Gå til betalingssteget
-      setVippsLink();
-      rsvpCard.style.display = "none";
-      payCard.classList.add("show");
-      payCard.scrollIntoView({ behavior: "smooth", block: "start" });
-
-    } catch (err) {
+      refreshPay();
+      goTo(2);
+      btn.disabled = false;
+      btn.innerHTML = 'Til betaling <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+    } catch (err){
       console.error(err);
       showErr("Noe gikk galt under sending. Prøv igjen, eller ta kontakt med arrangøren.");
-      btn.disabled = false;
-      btn.textContent = "Send påmelding";
+      btn.disabled = false; btn.textContent = "Til betaling";
     }
   });
+
+  /* ---------- Diskret snø (respekterer redusert bevegelse) ---------- */
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!reduce){
+    var cv = document.getElementById("snow"), ctx = cv.getContext("2d");
+    var flakes = [], W, H, DPR = Math.min(window.devicePixelRatio || 1, 2);
+    function resize(){
+      W = cv.width = innerWidth * DPR; H = cv.height = innerHeight * DPR;
+      cv.style.width = innerWidth + "px"; cv.style.height = innerHeight + "px";
+      var n = Math.round(innerWidth / 26); // diskret antall
+      flakes = [];
+      for (var i=0;i<n;i++) flakes.push({
+        x: Math.random()*W, y: Math.random()*H,
+        r: (Math.random()*1.6 + 0.6) * DPR,
+        s: (Math.random()*0.35 + 0.15) * DPR,
+        d: Math.random()*Math.PI*2,
+        o: Math.random()*0.4 + 0.15
+      });
+    }
+    function tick(){
+      ctx.clearRect(0,0,W,H);
+      for (var i=0;i<flakes.length;i++){
+        var f = flakes[i];
+        f.y += f.s; f.d += 0.008; f.x += Math.sin(f.d) * 0.3 * DPR;
+        if (f.y > H + 5){ f.y = -5; f.x = Math.random()*W; }
+        ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, Math.PI*2);
+        ctx.fillStyle = "rgba(255,255,255," + f.o + ")"; ctx.fill();
+      }
+      requestAnimationFrame(tick);
+    }
+    resize(); tick();
+    window.addEventListener("resize", resize);
+  }
 })();
 </script>
 </body>
