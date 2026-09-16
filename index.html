@@ -49,10 +49,11 @@
 }
 
 *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
-html{-webkit-text-size-adjust:100%;}
+html{-webkit-text-size-adjust:100%; overflow-x:hidden;}
 body{
   margin:0;
   min-height:100dvh;
+  width:100%; max-width:100%;
   background:var(--bg-0);
   color:var(--ink);
   font-family:var(--font-ui);
@@ -83,7 +84,7 @@ body{
 .app{max-width:var(--maxw); margin:0 auto; padding:0 18px;
      padding-top:calc(18px + env(safe-area-inset-top));
      padding-bottom:calc(28px + env(safe-area-inset-bottom));}
-.stage{position:relative; transition:height .55s var(--ease);}
+.stage{position:relative; transition:height .55s var(--ease); overflow-x:clip;}
 .screen{position:absolute; top:0; left:0; width:100%;
   opacity:0; transform:translateX(46px) scale(.98);
   pointer-events:none; transition:opacity .5s var(--ease), transform .5s var(--ease);}
@@ -270,7 +271,6 @@ footer .sn{color:var(--gold); letter-spacing:.45em;}
       </div>
 
       <div class="glass pad info">
-        <p class="about">Vi samler gjengen til julebord på Fredrikstad Skytterhus — med julebuffet, godt drikke og levende musikk utover kvelden. Meld deg på under, så sees vi til jul! 🎅</p>
         <ul class="rows">
           <li><span class="ic">📅</span><span class="txt"><span class="k">Når</span><span class="v" id="v-date">Fredag 20. november 2026<small id="v-time">Kl. 19:00</small></span></span></li>
           <li><span class="ic">📍</span><span class="txt"><span class="k">Hvor</span><span class="v" id="v-place">Fredrikstad Skytterhus<small id="v-address">Ilaveien 134, 1605 Fredrikstad</small></span></span></li>
