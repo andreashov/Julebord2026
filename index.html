@@ -114,6 +114,7 @@ body{
   .hero h1{animation:none;}
   .hero .divider, .hero p, .dept, .hero .yr, #screen-0 .info, #screen-0 .cta-wrap{animation:none;}
   .btn::after{display:none;}
+  .btn-gold::before{animation:none; display:none;}
   .bulb, .star{animation:none;}
 }
 
@@ -208,8 +209,14 @@ body{
 @keyframes sheen{from{left:-130%;}to{left:160%;}}
 .btn-gold{
   color:#241a08;
-  background:linear-gradient(180deg,var(--gold-2),var(--gold));
-  box-shadow:0 10px 26px -10px rgba(230,197,132,.7), inset 0 1px 0 rgba(255,255,255,.6);}
+  background:linear-gradient(180deg,#fff3d2 0%, var(--gold-2) 32%, var(--gold) 72%, #cca75c 100%);
+  box-shadow:0 10px 26px -10px rgba(230,197,132,.75), inset 0 1px 0 rgba(255,255,255,.7);}
+/* Kontinuerlig glinsende lys som glir over gull-knappen */
+.btn-gold::before{content:""; position:absolute; inset:0; z-index:0; pointer-events:none;
+  background:linear-gradient(105deg, transparent 36%, rgba(255,255,255,.72) 50%, transparent 64%);
+  background-size:250% 100%; background-position:210% 0; background-repeat:no-repeat;
+  animation:btnShine 3.4s ease-in-out 1s infinite;}
+@keyframes btnShine{0%{background-position:210% 0;} 55%,100%{background-position:-120% 0;}}
 .btn-glass{
   color:var(--ink);
   background:var(--glass-bg); border:1px solid var(--glass-brd);
