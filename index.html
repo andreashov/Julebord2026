@@ -112,7 +112,7 @@ body{
   .screen{transition:opacity .01s;}
   .blob, .emblem, #submit-btn, .glass::after{animation:none;}
   .hero h1{animation:none;}
-  .hero .divider, .hero p, .dept, #screen-0 .info, #screen-0 .cta-wrap{animation:none;}
+  .hero .divider, .hero p, .dept, .hero .yr, #screen-0 .info, #screen-0 .cta-wrap{animation:none;}
   .btn::after{display:none;}
   .bulb, .star{animation:none;}
 }
@@ -143,8 +143,8 @@ body{
 .hero{text-align:center; padding:16px 8px 4px;}
 .emblem{display:block; margin:0 auto 6px; filter:drop-shadow(0 0 16px rgba(230,197,132,.6));
   animation:twinkle 4s ease-in-out infinite, riseIn .7s var(--ease) both;}
-.dept{font-size:.74rem; font-weight:700; letter-spacing:.32em; text-transform:uppercase;
-  color:var(--gold); opacity:.92; margin:0 0 2px; animation:riseIn .7s .04s var(--ease) both;}
+.dept{font-size:.78rem; font-weight:700; letter-spacing:.3em; text-transform:uppercase;
+  color:var(--gold); opacity:.94; margin:4px 0 0; animation:riseIn .7s .12s var(--ease) both;}
 @keyframes twinkle{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.82; transform:scale(.94);}}
 @media (prefers-reduced-motion:reduce){.emblem{animation:none;}}
 .hero h1{
@@ -161,8 +161,9 @@ body{
 }
 @keyframes shimmer{0%{background-position:180% 0, 0 0;}55%,100%{background-position:-90% 0, 0 0;}}
 @keyframes riseIn{from{opacity:0; transform:translateY(18px);}to{opacity:1; transform:none;}}
-.hero .yr{display:block; font-style:italic; font-weight:600; font-size:.62em; color:var(--gold-2);
-  -webkit-text-fill-color:var(--gold-2);}
+.hero .yr{display:block; font-family:var(--font-display); font-style:italic; font-weight:600;
+  font-size:clamp(1.9rem, 8.5vw, 2.8rem); line-height:1; color:var(--gold-2);
+  -webkit-text-fill-color:var(--gold-2); margin-top:2px; animation:riseIn .7s .18s var(--ease) both;}
 .divider{display:flex; align-items:center; justify-content:center; gap:12px; color:var(--gold); margin:18px auto 0; opacity:.9;}
 .divider::before,.divider::after{content:""; height:1px; width:52px;}
 .divider::before{background:linear-gradient(90deg,transparent,var(--gold));}
@@ -394,8 +395,9 @@ footer .sn{color:var(--gold); letter-spacing:.45em;}
           <path d="M12 1.6l2.7 6.2 6.7.6-5.1 4.4 1.6 6.6L12 16.4 6.1 20l1.6-6.6L2.6 8.4l6.7-.6z"
                 fill="#e6c584" stroke="#f2dca8" stroke-width=".4" stroke-linejoin="round"/>
         </svg>
+        <h1>Julebord</h1>
         <div class="dept">Bildediagnostikk</div>
-        <h1>Julebord<span class="yr">2026</span></h1>
+        <div class="yr">2026</div>
         <p>Det er tid for årets julebord! Ta på deg julehumøret og bli med på en kveld i god, gammeldags julestemning.</p>
       </div>
 
