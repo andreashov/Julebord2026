@@ -114,19 +114,19 @@ body{
 /* Spekulær glans langs toppen */
 .glass::before{content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
   background:linear-gradient(180deg, rgba(255,255,255,.14), transparent 22%);}
-.pad{padding:22px 20px;}
+.pad{padding:14px 18px;}
 
 /* =========================================================================
    FORSIDE
    ========================================================================= */
-.hero{text-align:center; padding:34px 8px 10px;}
-.emblem{display:block; margin:0 auto 12px; filter:drop-shadow(0 0 16px rgba(230,197,132,.6));
+.hero{text-align:center; padding:16px 8px 4px;}
+.emblem{display:block; margin:0 auto 6px; filter:drop-shadow(0 0 16px rgba(230,197,132,.6));
   animation:twinkle 4s ease-in-out infinite, riseIn .7s var(--ease) both;}
 @keyframes twinkle{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.82; transform:scale(.94);}}
 @media (prefers-reduced-motion:reduce){.emblem{animation:none;}}
 .hero h1{
   font-family:var(--font-display); font-weight:700;
-  font-size:clamp(3.2rem, 15vw, 5rem); line-height:.94; margin:18px 0 0;
+  font-size:clamp(2.9rem, 13vw, 4.4rem); line-height:.94; margin:8px 0 0;
   letter-spacing:.5px;
   background:
     linear-gradient(105deg, transparent 34%, rgba(255,255,255,.92) 50%, transparent 66%),
@@ -144,23 +144,23 @@ body{
 .divider::before,.divider::after{content:""; height:1px; width:52px;}
 .divider::before{background:linear-gradient(90deg,transparent,var(--gold));}
 .divider::after{background:linear-gradient(90deg,var(--gold),transparent);}
-.hero p{color:var(--ink-soft); max-width:40ch; margin:16px auto 0; font-size:1.02rem;}
+.hero p{color:var(--ink-soft); max-width:40ch; margin:10px auto 0; font-size:.98rem;}
 
-.info{margin-top:22px;}
+.info{margin-top:16px;}
 .about{color:var(--ink-soft); font-size:1rem; line-height:1.6; margin:2px 0 16px;
   padding-bottom:18px; border-bottom:1px solid rgba(255,255,255,.07);}
 .form-h{font-family:var(--font-display); font-size:1.65rem; font-weight:600; margin:2px 0 4px; letter-spacing:.3px;}
 .form-h--screen{font-size:2rem; margin:4px 6px 18px;}
 .form-sub{color:var(--ink-soft); font-size:.92rem; margin:0 0 20px;}
 .rows{list-style:none; margin:0; padding:0;}
-.rows li{display:flex; gap:15px; align-items:flex-start; padding:15px 0; border-bottom:1px solid rgba(255,255,255,.07);}
+.rows li{display:flex; gap:13px; align-items:center; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.07);}
 .rows li:last-child{border-bottom:0;}
-.rows .ic{flex:0 0 auto; width:42px; height:42px; display:grid; place-items:center; margin-top:2px;
+.rows .ic{flex:0 0 auto; width:36px; height:36px; display:grid; place-items:center;
   color:var(--gold-2);
-  border-radius:13px; background:linear-gradient(180deg, rgba(230,197,132,.14), rgba(230,197,132,.05));
+  border-radius:11px; background:linear-gradient(180deg, rgba(230,197,132,.14), rgba(230,197,132,.05));
   border:1px solid rgba(230,197,132,.28);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.18), 0 3px 10px -6px rgba(230,197,132,.5);}
-.rows .ic svg{width:23px; height:23px; display:block;}
+.rows .ic svg{width:20px; height:20px; display:block;}
 .rows .txt{min-width:0;}
 .rows .k{display:block; font-size:.66rem; letter-spacing:.18em; text-transform:uppercase; color:var(--gold); margin-bottom:3px;}
 .rows .v{display:block; font-size:1.08rem; font-weight:600; color:var(--ink); letter-spacing:.2px;}
@@ -194,7 +194,7 @@ body{
 .btn-vipps{color:#fff; background:linear-gradient(180deg,#ff6a37,var(--vipps));
   box-shadow:0 10px 26px -10px rgba(255,91,36,.75), inset 0 1px 0 rgba(255,255,255,.4);}
 .btn:disabled{opacity:.55; cursor:not-allowed; box-shadow:none;}
-.cta-wrap{margin-top:22px;}
+.cta-wrap{margin-top:16px;}
 .cta-sub{text-align:center; color:var(--ink-dim); font-size:.82rem; margin:12px 0 0;}
 
 /* =========================================================================
@@ -371,7 +371,6 @@ footer .sn{color:var(--gold); letter-spacing:.45em;}
                 fill="#e6c584" stroke="#f2dca8" stroke-width=".4" stroke-linejoin="round"/>
         </svg>
         <h1>Julebord<span class="yr">2026</span></h1>
-        <div class="divider">🎄</div>
         <p>Det er tid for årets julebord! Ta på deg julehumøret og bli med på en kveld i god, gammeldags julestemning.</p>
       </div>
 
