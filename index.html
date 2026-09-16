@@ -92,7 +92,10 @@ body{
 .screen.left{opacity:0; transform:translateX(-46px) scale(.98);}
 @media (prefers-reduced-motion:reduce){
   .screen{transition:opacity .01s;}
-  .blob{animation:none;}
+  .blob, .emblem, #submit-btn, .glass::after{animation:none;}
+  .hero h1{animation:none;}
+  .hero .divider, .hero p, #screen-0 .info, #screen-0 .cta-wrap{animation:none;}
+  .btn::after{display:none;}
 }
 
 /* =========================================================================
@@ -118,17 +121,23 @@ body{
    ========================================================================= */
 .hero{text-align:center; padding:34px 8px 10px;}
 .emblem{display:block; margin:0 auto 12px; filter:drop-shadow(0 0 16px rgba(230,197,132,.6));
-  animation:twinkle 4s ease-in-out infinite;}
+  animation:twinkle 4s ease-in-out infinite, riseIn .7s var(--ease) both;}
 @keyframes twinkle{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.82; transform:scale(.94);}}
 @media (prefers-reduced-motion:reduce){.emblem{animation:none;}}
 .hero h1{
   font-family:var(--font-display); font-weight:700;
   font-size:clamp(3.2rem, 15vw, 5rem); line-height:.94; margin:18px 0 0;
   letter-spacing:.5px;
-  background:linear-gradient(180deg,#fff 0%, #f4e8cf 55%, var(--gold) 100%);
+  background:
+    linear-gradient(105deg, transparent 34%, rgba(255,255,255,.92) 50%, transparent 66%),
+    linear-gradient(180deg,#fff 0%, #f4e8cf 55%, var(--gold) 100%);
+  background-size:280% 100%, 100% 100%; background-position:180% 0, 0 0; background-repeat:no-repeat;
   -webkit-background-clip:text; background-clip:text; color:transparent;
   text-shadow:0 2px 30px rgba(230,197,132,.18);
+  animation:shimmer 4.5s ease-in-out 1.1s infinite, riseIn .7s .08s var(--ease) both;
 }
+@keyframes shimmer{0%{background-position:180% 0, 0 0;}55%,100%{background-position:-90% 0, 0 0;}}
+@keyframes riseIn{from{opacity:0; transform:translateY(18px);}to{opacity:1; transform:none;}}
 .hero .yr{display:block; font-style:italic; font-weight:600; font-size:.62em; color:var(--gold-2);
   -webkit-text-fill-color:var(--gold-2);}
 .divider{display:flex; align-items:center; justify-content:center; gap:12px; color:var(--gold); margin:18px auto 0; opacity:.9;}
@@ -160,9 +169,15 @@ body{
    ========================================================================= */
 .btn{display:flex; align-items:center; justify-content:center; gap:9px;
   width:100%; border:0; cursor:pointer; font-family:inherit; font-weight:600;
-  font-size:1.06rem; padding:16px 20px; border-radius:18px;
-  transition:transform .12s var(--ease), filter .2s, box-shadow .2s;}
-.btn:active{transform:scale(.975);}
+  font-size:1.06rem; padding:16px 20px; border-radius:18px; position:relative; overflow:hidden;
+  transition:transform .22s cubic-bezier(.34,1.56,.64,1), filter .2s, box-shadow .2s;}
+.btn:active{transform:scale(.955);}
+.btn > *{position:relative; z-index:1;}
+.btn::after{content:""; position:absolute; top:0; left:-130%; width:65%; height:100%; z-index:0;
+  background:linear-gradient(100deg, transparent, rgba(255,255,255,.55), transparent);
+  transform:skewX(-18deg); pointer-events:none;}
+.btn:hover::after, .btn:active::after{animation:sheen .65s ease;}
+@keyframes sheen{from{left:-130%;}to{left:160%;}}
 .btn-gold{
   color:#241a08;
   background:linear-gradient(180deg,var(--gold-2),var(--gold));
@@ -192,7 +207,7 @@ body{
 /* =========================================================================
    SKJEMA
    ========================================================================= */
-.field{margin-bottom:19px;}
+.field{margin-bottom:19px; position:relative;}
 .field label{display:block; font-size:.7rem; font-weight:700; letter-spacing:.15em; text-transform:uppercase;
   margin-bottom:9px; color:var(--gold); padding-left:2px;}
 .field .hint{color:var(--ink-dim); font-weight:500; letter-spacing:.02em; text-transform:none;}
@@ -242,6 +257,51 @@ textarea{min-height:86px; resize:vertical; line-height:1.5;}
 
 footer{text-align:center; color:var(--ink-dim); font-size:.8rem; margin-top:26px;}
 footer .sn{color:var(--gold); letter-spacing:.45em;}
+
+/* =========================================================================
+   OPPGRADERINGER: mikro-interaksjoner, materiale, feiring
+   ========================================================================= */
+
+/* Inn-animasjon (stagger) på forsiden ved last */
+.hero .divider{animation:riseIn .7s .16s var(--ease) both;}
+.hero p{animation:riseIn .7s .24s var(--ease) both;}
+#screen-0 .info{animation:riseIn .7s .32s var(--ease) both;}
+#screen-0 .cta-wrap{animation:riseIn .7s .40s var(--ease) both;}
+
+/* Gyldig-felt: grønn ✓ dukker opp med en liten «pop» */
+.field.ok input{
+  border-color:rgba(111,214,160,.55);
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%236fd6a0' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M20 6L9 17l-5-5'/></svg>");
+  background-repeat:no-repeat; background-position:right 14px center; padding-right:46px;
+  animation:okpop .35s var(--ease);
+}
+@keyframes okpop{0%{transform:scale(.997);}45%{transform:scale(1.015);}100%{transform:scale(1);}}
+
+/* Vipps-knapp: rolig pulserende glød som trekker blikket */
+#submit-btn{animation:vpulse 2.4s ease-in-out infinite;}
+#submit-btn:disabled{animation:none;}
+@keyframes vpulse{
+  0%,100%{box-shadow:0 10px 26px -10px rgba(255,91,36,.75), inset 0 1px 0 rgba(255,255,255,.4);}
+  50%{box-shadow:0 12px 34px -6px rgba(255,91,36,.95), 0 0 0 4px rgba(255,91,36,.14), inset 0 1px 0 rgba(255,255,255,.4);}
+}
+
+/* Roterende gull-glødkant rundt glasskortene */
+@property --ga{syntax:"<angle>"; initial-value:0deg; inherits:false;}
+.glass::after{
+  content:""; position:absolute; inset:0; border-radius:inherit; padding:1.5px; pointer-events:none;
+  background:conic-gradient(from var(--ga),
+    transparent 0deg, rgba(230,197,132,.7) 40deg, transparent 120deg,
+    transparent 220deg, rgba(230,197,132,.45) 280deg, transparent 350deg);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite:exclude;
+  animation:gaspin 7s linear infinite;
+}
+@keyframes gaspin{to{--ga:360deg;}}
+
+/* Feirings-canvas (over alt, ingen interaksjon) */
+#burst{position:fixed; inset:0; z-index:50; pointer-events:none; display:none;}
 </style>
 </head>
 <body>
@@ -254,6 +314,7 @@ footer .sn{color:var(--gold); letter-spacing:.45em;}
 </div>
 <div class="grain" aria-hidden="true"></div>
 <canvas id="snow" aria-hidden="true"></canvas>
+<canvas id="burst" aria-hidden="true"></canvas>
 
 <main class="app">
   <div class="stage" id="stage">
@@ -371,6 +432,8 @@ const CONFIG = {
 /* ------------------------------------------------------------------ */
 (function () {
   "use strict";
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function haptic(p){ try{ if(navigator.vibrate) navigator.vibrate(p); }catch(_){} }
   var d = CONFIG.detaljer;
   document.getElementById("v-date").firstChild.textContent = d.dato;
   document.getElementById("v-time").textContent = d.tid;
@@ -412,9 +475,9 @@ const CONFIG = {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  document.getElementById("to-form").addEventListener("click", function(){ goTo(1); });
+  document.getElementById("to-form").addEventListener("click", function(){ haptic(8); goTo(1); });
   Array.prototype.forEach.call(document.querySelectorAll("[data-back]"), function(b){
-    b.addEventListener("click", function(){ goTo(current - 1); });
+    b.addEventListener("click", function(){ haptic(8); goTo(current - 1); });
   });
 
   window.addEventListener("resize", setHeight);
@@ -431,6 +494,50 @@ const CONFIG = {
   function showErr(t){ msg.textContent = t; msg.classList.add("show"); }
   function clrErr(){ msg.classList.remove("show"); msg.textContent = ""; }
 
+  /* Live «gyldig ✓» på nøkkelfeltene */
+  var okFields = [
+    { el: form.navn,    test: function(v){ return v.trim().length > 0; } },
+    { el: form.epost,   test: function(v){ return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v.trim()); } },
+    { el: form.telefon, test: function(v){ return v.replace(/\D/g, "").length >= 8; } }
+  ];
+  okFields.forEach(function(f){
+    function upd(){ f.el.parentNode.classList.toggle("ok", f.test(f.el.value)); }
+    f.el.addEventListener("input", upd);
+    f.el.addEventListener("blur", upd);
+  });
+
+  /* Feiring: gull-gnist-byge før viderekobling */
+  function celebrate(done){
+    var c = document.getElementById("burst");
+    if (!c || reduce){ done(); return; }
+    var x = c.getContext("2d");
+    var DPR = Math.min(window.devicePixelRatio || 1, 2);
+    var W = c.width = innerWidth * DPR, H = c.height = innerHeight * DPR;
+    c.style.display = "block";
+    var cx = W / 2, cy = H * 0.4, P = [], cols = ["#f2dca8","#e6c584","#ffffff","#ff8a5c","#6fd6a0"];
+    for (var i = 0; i < 110; i++){
+      var a = Math.random() * Math.PI * 2, sp = (Math.random() * 7 + 3) * DPR;
+      P.push({ x: cx, y: cy, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 2.5 * DPR,
+               r: (Math.random() * 3 + 1.5) * DPR, life: 1,
+               dec: Math.random() * 0.008 + 0.009, col: cols[(Math.random() * cols.length) | 0] });
+    }
+    var t0 = performance.now(), finished = false;
+    function end(){ if (finished) return; finished = true; c.style.display = "none"; done(); }
+    (function anim(t){
+      x.clearRect(0, 0, W, H);
+      var alive = false;
+      for (var i = 0; i < P.length; i++){
+        var p = P[i]; if (p.life <= 0) continue; alive = true;
+        p.vy += 0.16 * DPR; p.vx *= 0.99; p.x += p.vx; p.y += p.vy; p.life -= p.dec;
+        x.globalAlpha = Math.max(p.life, 0); x.fillStyle = p.col;
+        x.beginPath(); x.arc(p.x, p.y, p.r, 0, 6.283); x.fill();
+      }
+      x.globalAlpha = 1;
+      if (alive && t - t0 < 1400) requestAnimationFrame(anim); else end();
+    })(t0);
+    setTimeout(end, 1500); // sikkerhetsnett
+  }
+
   form.addEventListener("submit", async function(e){
     e.preventDefault();
     clrErr();
@@ -445,7 +552,17 @@ const CONFIG = {
     };
     var endpoint = (CONFIG.paameldingEndepunkt || "").trim();
     var vippsLink = (CONFIG.vippsLenke || "").trim();
+    haptic(8);
     btn.disabled = true; btn.textContent = "Sender …";
+
+    function proceed(){
+      if (vippsLink){
+        window.location.href = vippsLink;
+      } else {
+        showErr("Vipps-lenke er ikke satt opp ennå. Ta kontakt med arrangøren.");
+        btn.disabled = false; btn.textContent = "Til betaling med Vipps";
+      }
+    }
 
     try {
       if (endpoint){
@@ -461,13 +578,11 @@ const CONFIG = {
         console.info("[Testmodus] Ingen paameldingEndepunkt satt. Data:", data);
       }
 
-      // Rett til Vipps
-      if (vippsLink){
-        window.location.href = vippsLink;
-      } else {
-        showErr("Vipps-lenke er ikke satt opp ennå. Ta kontakt med arrangøren.");
-        btn.disabled = false; btn.textContent = "Til betaling med Vipps";
-      }
+      // Feiring, så videre til Vipps
+      haptic([15, 40, 20]);
+      btn.innerHTML = "Påmeldt! 🎉";
+      celebrate(proceed);
+
     } catch (err){
       console.error(err);
       showErr("Noe gikk galt under sending. Prøv igjen, eller ta kontakt med arrangøren.");
@@ -476,7 +591,6 @@ const CONFIG = {
   });
 
   /* ---------- Diskret snø (respekterer redusert bevegelse) ---------- */
-  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (!reduce){
     var cv = document.getElementById("snow"), ctx = cv.getContext("2d");
     var flakes = [], W, H, DPR = Math.min(window.devicePixelRatio || 1, 2);
