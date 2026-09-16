@@ -178,14 +178,14 @@ body{
 .form-h--screen{font-size:2rem; margin:4px 6px 18px;}
 .form-sub{color:var(--ink-soft); font-size:.92rem; margin:0 0 20px;}
 .rows{list-style:none; margin:0; padding:0;}
-.rows li{display:flex; gap:13px; align-items:flex-end; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.07);}
+.rows li{display:flex; gap:14px; align-items:flex-start; padding:11px 0; border-bottom:1px solid rgba(255,255,255,.07);}
 .rows li:last-child{border-bottom:0;}
-.rows .ic{flex:0 0 auto; width:36px; height:36px; display:grid; place-items:center; margin-bottom:1px;
+.rows .ic{flex:0 0 auto; width:40px; height:40px; display:grid; place-items:center; margin-top:6px;
   color:var(--gold-2);
-  border-radius:11px; background:linear-gradient(180deg, rgba(230,197,132,.14), rgba(230,197,132,.05));
+  border-radius:12px; background:linear-gradient(180deg, rgba(230,197,132,.14), rgba(230,197,132,.05));
   border:1px solid rgba(230,197,132,.28);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.18), 0 3px 10px -6px rgba(230,197,132,.5);}
-.rows .ic svg{width:20px; height:20px; display:block;}
+.rows .ic svg{width:22px; height:22px; display:block;}
 .rows .txt{min-width:0;}
 .rows .k{display:block; font-size:.66rem; letter-spacing:.18em; text-transform:uppercase; color:var(--gold); margin-bottom:3px;}
 .rows .v{display:block; font-size:1.08rem; font-weight:600; color:var(--ink); letter-spacing:.2px;}
@@ -208,12 +208,14 @@ body{
 .btn:hover::after, .btn:active::after{animation:sheen .65s ease;}
 @keyframes sheen{from{left:-130%;}to{left:160%;}}
 .btn-gold{
-  color:#241a08;
-  background:linear-gradient(180deg,#fff3d2 0%, var(--gold-2) 32%, var(--gold) 72%, #cca75c 100%);
-  box-shadow:0 10px 26px -10px rgba(230,197,132,.75), inset 0 1px 0 rgba(255,255,255,.7);}
-/* Kontinuerlig glinsende lys som glir over gull-knappen */
+  color:#2a1d04;
+  background:linear-gradient(177deg,
+    #f6e3a0 0%, #e4c064 20%, #cea23c 48%, #b78d34 72%, #977026 100%);
+  box-shadow:0 10px 26px -10px rgba(190,145,52,.72),
+    inset 0 1px 0 rgba(255,248,225,.8), inset 0 -2px 5px rgba(120,88,30,.4);}
+/* Kontinuerlig glinsende gull-lys som glir over knappen */
 .btn-gold::before{content:""; position:absolute; inset:0; z-index:0; pointer-events:none;
-  background:linear-gradient(105deg, transparent 36%, rgba(255,255,255,.72) 50%, transparent 64%);
+  background:linear-gradient(105deg, transparent 37%, rgba(255,251,235,.7) 50%, transparent 63%);
   background-size:250% 100%; background-position:210% 0; background-repeat:no-repeat;
   animation:btnShine 3.4s ease-in-out 1s infinite;}
 @keyframes btnShine{0%{background-position:210% 0;} 55%,100%{background-position:-120% 0;}}
