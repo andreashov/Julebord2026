@@ -195,14 +195,21 @@ body{
   box-shadow:0 10px 26px -10px rgba(255,91,36,.75), inset 0 1px 0 rgba(255,255,255,.4);}
 .btn:disabled{opacity:.55; cursor:not-allowed; box-shadow:none;}
 .cta-wrap{margin-top:16px;}
-.mascot{margin:14px auto 0; text-align:center; pointer-events:none;}
-.mascot img{width:min(74%, 320px); height:auto; display:inline-block;
-  filter:drop-shadow(0 16px 24px rgba(0,0,0,.55));
-  transform-origin:50% 100%; animation:bob 4.6s ease-in-out infinite;}
-.mascot-tag{display:block; margin-top:6px; font-family:var(--font-display); font-style:italic;
-  color:var(--gold-2); font-size:1.02rem; letter-spacing:.2px; opacity:.92;}
-@keyframes bob{0%,100%{transform:translateY(0) rotate(-1.2deg);}50%{transform:translateY(-9px) rotate(1.2deg);}}
-@media (prefers-reduced-motion:reduce){.mascot img{animation:none;}}
+/* Maskot: sklir inn fra høyre kant og «titter inn» (bob) — kun på forsiden */
+.mascot{position:fixed; right:0; bottom:20%; z-index:6; pointer-events:none;
+  width:min(52vw, 240px); transform:translateX(112%);
+  transition:transform .6s var(--ease), opacity .4s;}
+.mascot.show{animation:mascotIn .9s var(--ease) forwards;}
+.mascot.hide{transform:translateX(112%); opacity:0;}
+.mascot img{display:block; width:100%; height:auto;
+  filter:drop-shadow(-8px 14px 22px rgba(0,0,0,.6));
+  transform-origin:75% 100%; animation:bob 4.4s ease-in-out .9s infinite;}
+@keyframes mascotIn{from{transform:translateX(112%);}to{transform:translateX(34%);}}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-2.5deg);}50%{transform:translateY(-8px) rotate(2.5deg);}}
+@media (prefers-reduced-motion:reduce){
+  .mascot{transform:translateX(34%);} .mascot img{animation:none;}
+  .mascot.show{animation:none;}
+}
 .cta-sub{text-align:center; color:var(--ink-dim); font-size:.82rem; margin:12px 0 0;}
 
 /* =========================================================================
@@ -434,10 +441,6 @@ footer .sn{color:var(--gold); letter-spacing:.45em;}
         </button>
       </div>
 
-      <div class="mascot" aria-hidden="true">
-        <img src="assets/nisseskjelett.png" alt="" loading="lazy" />
-        <span class="mascot-tag">Skål – vi sees på julebordet! 🍺</span>
-      </div>
     </section>
 
     <!-- ============== SKJERM 2: PÅMELDING ============== -->
@@ -499,6 +502,10 @@ footer .sn{color:var(--gold); letter-spacing:.45em;}
   </div>
 </main>
 
+<div class="mascot show" id="mascot" aria-hidden="true">
+  <img src="assets/nisseskjelett.png" alt="" loading="lazy" />
+</div>
+
 <script>
 /* =========================================================================
    ⚙️  KONFIGURASJON — fyll inn dine verdier her.
@@ -543,6 +550,13 @@ const CONFIG = {
   var current = 0;
   var stageTimer;
 
+  var mascot = document.getElementById("mascot");
+  function updateMascot(){
+    if (!mascot) return;
+    if (current === 0){ mascot.classList.remove("hide"); mascot.classList.add("show"); }
+    else { mascot.classList.remove("show"); mascot.classList.add("hide"); }
+  }
+
   // Sett høyde uten animasjon (brukes ved last/resize — unngår at en resize
   // under scroll re-animerer høyden og «spiser» første sveip på mobil).
   function setHeight(){ stage.style.height = screens[current].offsetHeight + "px"; }
@@ -566,6 +580,7 @@ const CONFIG = {
     setHeight();
     clearTimeout(stageTimer);
     stageTimer = setTimeout(function(){ stage.style.transition = ""; }, 620);
+    updateMascot();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
