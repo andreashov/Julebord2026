@@ -195,21 +195,6 @@ body{
   box-shadow:0 10px 26px -10px rgba(255,91,36,.75), inset 0 1px 0 rgba(255,255,255,.4);}
 .btn:disabled{opacity:.55; cursor:not-allowed; box-shadow:none;}
 .cta-wrap{margin-top:16px;}
-/* Maskot: rotert 90° (hodet inn fra høyre), sklir inn og «titter inn» (bob) — kun forsiden */
-.mascot{position:fixed; right:0; bottom:16%; z-index:6; pointer-events:none;
-  width:min(58vw, 260px); transform:translateX(112%);
-  transition:transform .6s var(--ease), opacity .4s;}
-.mascot.show{animation:mascotIn .9s var(--ease) forwards;}
-.mascot.hide{transform:translateX(112%); opacity:0;}
-.mascot img{display:block; width:100%; height:auto; transform:rotate(-90deg); transform-origin:center;
-  filter:drop-shadow(-6px 10px 18px rgba(0,0,0,.6));
-  animation:bob 4.4s ease-in-out .9s infinite;}
-@keyframes mascotIn{from{transform:translateX(112%);}to{transform:translateX(30%);}}
-@keyframes bob{0%,100%{transform:translateY(0) rotate(-90deg);}50%{transform:translateY(-8px) rotate(-90deg);}}
-@media (prefers-reduced-motion:reduce){
-  .mascot{transform:translateX(30%);} .mascot img{animation:none; transform:rotate(-90deg);}
-  .mascot.show{animation:none;}
-}
 .cta-sub{text-align:center; color:var(--ink-dim); font-size:.82rem; margin:12px 0 0;}
 
 /* =========================================================================
@@ -502,10 +487,6 @@ footer .sn{color:var(--gold); letter-spacing:.45em;}
   </div>
 </main>
 
-<div class="mascot show" id="mascot" aria-hidden="true">
-  <img src="assets/nisseskjelett.png" alt="" loading="lazy" />
-</div>
-
 <script>
 /* =========================================================================
    ⚙️  KONFIGURASJON — fyll inn dine verdier her.
@@ -550,13 +531,6 @@ const CONFIG = {
   var current = 0;
   var stageTimer;
 
-  var mascot = document.getElementById("mascot");
-  function updateMascot(){
-    if (!mascot) return;
-    if (current === 0){ mascot.classList.remove("hide"); mascot.classList.add("show"); }
-    else { mascot.classList.remove("show"); mascot.classList.add("hide"); }
-  }
-
   // Sett høyde uten animasjon (brukes ved last/resize — unngår at en resize
   // under scroll re-animerer høyden og «spiser» første sveip på mobil).
   function setHeight(){ stage.style.height = screens[current].offsetHeight + "px"; }
@@ -580,7 +554,6 @@ const CONFIG = {
     setHeight();
     clearTimeout(stageTimer);
     stageTimer = setTimeout(function(){ stage.style.transition = ""; }, 620);
-    updateMascot();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
