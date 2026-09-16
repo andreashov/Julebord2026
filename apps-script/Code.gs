@@ -5,17 +5,27 @@
  * Nettsiden sender påmeldinger hit, og hver påmelding blir en ny rad i arket.
  * Gjestene ser ALDRI regnearket — de fyller kun ut den fine nettsiden.
  *
- * Oppsett (se README.md for skjermbilder/detaljer):
+ * Oppsett (se README.md for detaljer):
  *   1. Lag et nytt Google Sheet.
- *   2. Utvidelser → Apps Script. Lim inn denne koden.
+ *   2. Utvidelser → Apps Script. Lim inn denne koden. Lagre.
  *   3. Distribuer → Ny distribusjon → Web-app.
  *        - Kjør som: Meg selv
  *        - Hvem har tilgang: Alle (Anyone)
- *   4. Kopier web-app-URL-en og lim den inn i index.html (CONFIG.paameldingEndepunkt).
+ *   4. Godkjenn tilgangene. Kopier web-app-URL-en (slutter på /exec)
+ *      og lim den inn i index.html (CONFIG.paameldingEndepunkt).
  */
+
+/* ===================== INNSTILLINGER ===================== */
 
 // Overskrifter i regnearket (rekkefølge = kolonnerekkefølge)
 var HEADERS = ['Tidspunkt', 'Navn', 'E-post', 'Mobil', 'Antall', 'Allergi/mat', 'Kommentar', 'Betalt'];
+
+// Valgfritt: få e-postvarsel ved hver påmelding.
+// Sett inn din e-post for å slå det på, f.eks. "andreashov@gmail.com".
+// La stå tom ("") for å slå det av.
+var NOTIFY_EMAIL = "";
+
+/* ======================================================== */
 
 function doPost(e) {
   var lock = LockService.getScriptLock();
@@ -33,7 +43,7 @@ function doPost(e) {
 
     var data = JSON.parse(e.postData.contents);
 
-    // Tidspunkt fra klienten er ISO — gjør det til lesbar norsk tid
+    // Tidspunkt fra klienten er ISO — gjør det til lesbar dato/tid
     var naar = data.tidspunkt ? new Date(data.tidspunkt) : new Date();
 
     sheet.appendRow([
@@ -47,6 +57,10 @@ function doPost(e) {
       ''                            // 'Betalt' — kryss av manuelt når Vipps er mottatt
     ]);
 
+    if (NOTIFY_EMAIL) {
+      sendNotification(data, naar);
+    }
+
     return json({ result: 'ok' });
 
   } catch (err) {
@@ -59,6 +73,26 @@ function doPost(e) {
 // Enkel helsesjekk hvis du åpner URL-en i nettleser
 function doGet() {
   return json({ result: 'ok', message: 'Julebord 2026 påmeldings-endepunkt er oppe.' });
+}
+
+function sendNotification(data, naar) {
+  try {
+    var antall = data.antall || '1';
+    var emne = 'Ny påmelding julebord: ' + (data.navn || 'Ukjent') + ' (' + antall + ')';
+    var linjer = [
+      'Ny påmelding registrert ' + naar.toLocaleString('no-NO'),
+      '',
+      'Navn:      ' + (data.navn || ''),
+      'E-post:    ' + (data.epost || ''),
+      'Mobil:     ' + (data.telefon || ''),
+      'Antall:    ' + antall,
+      'Allergi:   ' + (data.allergi || '(ingen oppgitt)'),
+      'Kommentar: ' + (data.kommentar || '(ingen)')
+    ];
+    MailApp.sendEmail(NOTIFY_EMAIL, emne, linjer.join('\n'));
+  } catch (err) {
+    // La aldri en varslingsfeil stoppe selve lagringen
+  }
 }
 
 function json(obj) {
