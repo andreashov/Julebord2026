@@ -195,19 +195,19 @@ body{
   box-shadow:0 10px 26px -10px rgba(255,91,36,.75), inset 0 1px 0 rgba(255,255,255,.4);}
 .btn:disabled{opacity:.55; cursor:not-allowed; box-shadow:none;}
 .cta-wrap{margin-top:16px;}
-/* Maskot: sklir inn fra høyre kant og «titter inn» (bob) — kun på forsiden */
-.mascot{position:fixed; right:0; bottom:20%; z-index:6; pointer-events:none;
-  width:min(52vw, 240px); transform:translateX(112%);
+/* Maskot: rotert 90° (hodet inn fra høyre), sklir inn og «titter inn» (bob) — kun forsiden */
+.mascot{position:fixed; right:0; bottom:16%; z-index:6; pointer-events:none;
+  width:min(58vw, 260px); transform:translateX(112%);
   transition:transform .6s var(--ease), opacity .4s;}
 .mascot.show{animation:mascotIn .9s var(--ease) forwards;}
 .mascot.hide{transform:translateX(112%); opacity:0;}
-.mascot img{display:block; width:100%; height:auto;
-  filter:drop-shadow(-8px 14px 22px rgba(0,0,0,.6));
-  transform-origin:75% 100%; animation:bob 4.4s ease-in-out .9s infinite;}
-@keyframes mascotIn{from{transform:translateX(112%);}to{transform:translateX(34%);}}
-@keyframes bob{0%,100%{transform:translateY(0) rotate(-2.5deg);}50%{transform:translateY(-8px) rotate(2.5deg);}}
+.mascot img{display:block; width:100%; height:auto; transform:rotate(-90deg); transform-origin:center;
+  filter:drop-shadow(-6px 10px 18px rgba(0,0,0,.6));
+  animation:bob 4.4s ease-in-out .9s infinite;}
+@keyframes mascotIn{from{transform:translateX(112%);}to{transform:translateX(30%);}}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-90deg);}50%{transform:translateY(-8px) rotate(-90deg);}}
 @media (prefers-reduced-motion:reduce){
-  .mascot{transform:translateX(34%);} .mascot img{animation:none;}
+  .mascot{transform:translateX(30%);} .mascot img{animation:none; transform:rotate(-90deg);}
   .mascot.show{animation:none;}
 }
 .cta-sub{text-align:center; color:var(--ink-dim); font-size:.82rem; margin:12px 0 0;}
@@ -798,14 +798,14 @@ const CONFIG = {
     function resize(){
       W = cv.width = innerWidth * DPR; H = cv.height = innerHeight * DPR;
       cv.style.width = innerWidth + "px"; cv.style.height = innerHeight + "px";
-      var n = Math.round(innerWidth / 26); // diskret antall
+      var n = Math.round(innerWidth / 15); // konstant snø — tydeligere, men bak innhold
       flakes = [];
       for (var i=0;i<n;i++) flakes.push({
         x: Math.random()*W, y: Math.random()*H,
-        r: (Math.random()*1.6 + 0.6) * DPR,
-        s: (Math.random()*0.35 + 0.15) * DPR,
+        r: (Math.random()*2.4 + 0.9) * DPR,
+        s: (Math.random()*0.45 + 0.18) * DPR,
         d: Math.random()*Math.PI*2,
-        o: Math.random()*0.4 + 0.15
+        o: Math.random()*0.5 + 0.22
       });
     }
     function tick(){
