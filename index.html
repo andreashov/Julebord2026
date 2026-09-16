@@ -295,6 +295,18 @@ footer .sn{color:var(--gold); letter-spacing:.45em;}
   outline:0; color:var(--ink); font-family:inherit; font-size:16px; letter-spacing:.2px; padding:8px 0; text-align:left;}
 .gin:focus{background:transparent; box-shadow:none; border:0;}
 .gin::placeholder{color:#7c8579;}
+/* Nøytraliser nettleserens gule autofyll-bakgrunn (Safari + Chrome) */
+.gin:-webkit-autofill,
+.gin:-webkit-autofill:hover,
+.gin:-webkit-autofill:focus,
+.gin:-webkit-autofill:active{
+  -webkit-text-fill-color:var(--ink) !important;
+  caret-color:var(--ink);
+  -webkit-box-shadow:inset 0 0 0 1000px #1c2b21 !important;
+  box-shadow:inset 0 0 0 1000px #1c2b21 !important;
+  transition:background-color 600000s 0s, color 600000s 0s;
+  border-radius:0;
+}
 .gsel{padding-right:24px; cursor:pointer;
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='none' stroke='%23e6c584' stroke-width='2.2'><path d='M4 7l5 5 5-5'/></svg>");
   background-repeat:no-repeat; background-position:right 0 center;}
@@ -502,6 +514,8 @@ const CONFIG = {
   "use strict";
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   function haptic(p){ try{ if(navigator.vibrate) navigator.vibrate(p); }catch(_){} }
+  var isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)
+    || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
   var d = CONFIG.detaljer;
   document.getElementById("v-date").firstChild.textContent = d.dato;
   document.getElementById("v-time").textContent = d.tid;
@@ -606,7 +620,7 @@ const CONFIG = {
     setTimeout(end, 1500); // sikkerhetsnett
   }
 
-  form.addEventListener("submit", async function(e){
+  form.addEventListener("submit", function(e){
     e.preventDefault();
     clrErr();
     var navn = form.navn.value.trim(), epost = form.epost.value.trim(), telefon = form.telefon.value.trim();
@@ -620,41 +634,40 @@ const CONFIG = {
     };
     var endpoint = (CONFIG.paameldingEndepunkt || "").trim();
     var vippsLink = (CONFIG.vippsLenke || "").trim();
+
+    if (!vippsLink){
+      showErr("Vipps-lenke er ikke satt opp ennå. Ta kontakt med arrangøren.");
+      return;
+    }
+
     haptic(8);
     btn.disabled = true; btn.textContent = "Sender …";
 
-    function proceed(){
-      if (vippsLink){
-        window.location.href = vippsLink;
-      } else {
-        showErr("Vipps-lenke er ikke satt opp ennå. Ta kontakt med arrangøren.");
-        btn.disabled = false; btn.textContent = "Til betaling med Vipps";
-      }
-    }
-
-    try {
-      if (endpoint){
-        // Apps Script gir et ugjennomsiktig svar på tvers av domener (no-cors).
-        // POST-en utføres server-side og raden lagres selv om vi ikke kan lese svaret.
-        await fetch(endpoint, {
+    // Lagre robust: keepalive lar POST-en fullføre selv om vi navigerer
+    // videre til Vipps med én gang (viktig for at appen skal åpnes på mobil).
+    if (endpoint){
+      try {
+        fetch(endpoint, {
           method: "POST",
           mode: "no-cors",
+          keepalive: true,
           headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify(data)
         });
-      } else {
-        console.info("[Testmodus] Ingen paameldingEndepunkt satt. Data:", data);
-      }
+      } catch (err){ console.error(err); }
+    } else {
+      console.info("[Testmodus] Ingen paameldingEndepunkt satt. Data:", data);
+    }
 
-      // Feiring, så videre til Vipps
+    if (isMobile){
+      // Mobil: naviger i SAMME trykk → Vipps-appen åpnes (universelle lenker
+      // krever at navigasjonen skjer i brukergesten, uten forsinkelse).
+      window.location.href = vippsLink;
+    } else {
+      // PC/Mac: kort feiring, så Vipps' QR-side (qr.vipps.no viser QR på desktop).
       haptic([15, 40, 20]);
       btn.innerHTML = "Påmeldt! 🎉";
-      celebrate(proceed);
-
-    } catch (err){
-      console.error(err);
-      showErr("Noe gikk galt under sending. Prøv igjen, eller ta kontakt med arrangøren.");
-      btn.disabled = false; btn.textContent = "Til betaling med Vipps";
+      celebrate(function(){ window.location.href = vippsLink; });
     }
   });
 
