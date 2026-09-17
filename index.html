@@ -12,7 +12,6 @@
 
 <!-- Favicon / app-ikoner (filer i /favicon) -->
 <link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96" />
-<link rel="icon" type="image/svg+xml" href="favicon/favicon.svg" />
 <link rel="shortcut icon" href="favicon/favicon.ico" />
 <link rel="apple-touch-icon" href="favicon/apple-touch-icon.png" />
 <link rel="manifest" href="favicon/site.webmanifest" />
@@ -632,98 +631,6 @@ const CONFIG = {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  /* ---------- Snøfall ved «Til påmelding» ---------- */
-  // Tegn én 6-armet snøkrystall sentrert i (0,0) med radius R.
-  function drawCrystal(g, R, v){
-    g.strokeStyle = "rgba(255,255,255,0.95)";
-    g.lineCap = "round"; g.lineJoin = "round";
-    g.lineWidth = Math.max(1.1, R * 0.07);
-    var b1 = 0.44 + (v % 2) * 0.07, b2 = 0.72 + ((v >> 1) % 2) * 0.05;
-    for (var a = 0; a < 6; a++){
-      g.save(); g.rotate(a * Math.PI / 3);
-      g.beginPath();
-      g.moveTo(0, 0); g.lineTo(0, -R);
-      g.moveTo(0, -R * b1); g.lineTo(R * 0.24, -R * (b1 + 0.16));
-      g.moveTo(0, -R * b1); g.lineTo(-R * 0.24, -R * (b1 + 0.16));
-      g.moveTo(0, -R * b2); g.lineTo(R * 0.18, -R * (b2 + 0.12));
-      g.moveTo(0, -R * b2); g.lineTo(-R * 0.18, -R * (b2 + 0.12));
-      g.stroke();
-      g.restore();
-    }
-    g.beginPath(); g.arc(0, 0, R * 0.09, 0, 6.283); g.fillStyle = "rgba(255,255,255,0.95)"; g.fill();
-  }
-
-  // Forhåndstegn noen krystall-varianter til sprites (blittes billig hvert bilde).
-  function buildCrystalSprites(dpr){
-    var out = [], pad = 12, css = 52; // total CSS-størrelse per sprite
-    for (var v = 0; v < 4; v++){
-      var cn = document.createElement("canvas");
-      cn.width = css * dpr; cn.height = css * dpr;
-      var g = cn.getContext("2d");
-      g.setTransform(dpr, 0, 0, dpr, 0, 0);
-      g.translate(css / 2, css / 2);
-      g.shadowColor = "rgba(255,255,255,0.55)"; g.shadowBlur = 6;
-      drawCrystal(g, (css - pad) / 2, v);
-      out.push({ canvas: cn, css: css });
-    }
-    return out;
-  }
-
-  function snowfall(){
-    var c = document.getElementById("burst");
-    if (!c || reduce) return;
-    var ctx = c.getContext("2d");
-    var DPR = Math.min(window.devicePixelRatio || 1, 2);
-    var W = innerWidth, H = innerHeight;
-    c.width = W * DPR; c.height = H * DPR; c.style.display = "block";
-    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-
-    var sprites = buildCrystalSprites(DPR);
-    var P = [];
-    function make(spread){
-      var big = Math.random() < 0.42;
-      var scale = big ? (Math.random() * 0.55 + 0.85) : (Math.random() * 0.4 + 0.34);
-      return {
-        x: Math.random() * W,
-        y: spread ? Math.random() * H : (-60 - Math.random() * H * 0.5),
-        vy: (big ? (Math.random() * 45 + 60) : (Math.random() * 28 + 32)) * scale, // px/sek, parallakse
-        ph: Math.random() * 6.283, phS: Math.random() * 0.7 + 0.4,
-        amp: Math.random() * 22 + 8,
-        rot: Math.random() * 6.283, rotS: (Math.random() * 0.9 - 0.45),
-        scale: scale,
-        spr: sprites[(Math.random() * sprites.length) | 0],
-        alpha: big ? (Math.random() * 0.25 + 0.72) : (Math.random() * 0.4 + 0.4)
-      };
-    }
-    var i, N = 70;
-    for (i = 0; i < N; i++) P.push(make(true));
-
-    var t0 = performance.now(), last = t0, DUR = 2900, SPAWN_UNTIL = 1700, FADE = 2050;
-    (function frame(t){
-      var dt = Math.min((t - last) / 1000, 0.05); last = t;
-      var el = t - t0;
-      var gFade = el > FADE ? Math.max(0, 1 - (el - FADE) / (DUR - FADE)) : 1;
-      ctx.clearRect(0, 0, W, H);
-      for (var k = P.length - 1; k >= 0; k--){
-        var p = P[k];
-        p.y += p.vy * dt;
-        p.ph += p.phS * dt; p.x += Math.sin(p.ph) * p.amp * dt;
-        p.rot += p.rotS * dt;
-        if (p.y > H + 70){
-          if (el < SPAWN_UNTIL){ p.y = -60; p.x = Math.random() * W; } // resirkuler
-          else { P.splice(k, 1); continue; }
-        }
-        var size = p.spr.css * p.scale;
-        ctx.save();
-        ctx.globalAlpha = p.alpha * gFade;
-        ctx.translate(p.x, p.y); ctx.rotate(p.rot);
-        ctx.drawImage(p.spr.canvas, -size / 2, -size / 2, size, size);
-        ctx.restore();
-      }
-      if (el < DUR && P.length){ requestAnimationFrame(frame); }
-      else { ctx.clearRect(0, 0, W, H); c.style.display = "none"; }
-    })(t0);
-  }
 
   /* ---------- Øl-fylling (easter egg: trykk på stjernen) ---------- */
   function pourBeer(){
@@ -875,7 +782,7 @@ const CONFIG = {
   var emblemEl = document.querySelector(".emblem");
   if (emblemEl) emblemEl.addEventListener("click", toggleBeer);
 
-  document.getElementById("to-form").addEventListener("click", function(){ haptic(8); snowfall(); goTo(1); });
+  document.getElementById("to-form").addEventListener("click", function(){ haptic(8); goTo(1); });
   Array.prototype.forEach.call(document.querySelectorAll("[data-back]"), function(b){
     b.addEventListener("click", function(){ haptic(8); goTo(current - 1); });
   });
