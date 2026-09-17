@@ -104,8 +104,9 @@ body{
    ========================================================================= */
 .app{max-width:var(--maxw); margin:0 auto; padding:0 18px;
      padding-top:calc(18px + env(safe-area-inset-top));
-     padding-bottom:calc(28px + env(safe-area-inset-bottom));}
-.stage{position:relative; overflow-x:clip;}
+     padding-bottom:calc(28px + env(safe-area-inset-bottom));
+     min-height:100dvh; display:flex; flex-direction:column;}
+.stage{position:relative; overflow-x:clip; margin:auto 0;}
 .screen{position:absolute; top:0; left:0; width:100%;
   opacity:0; transform:translateX(52px) scale(.965);
   pointer-events:none; transition:opacity .62s var(--ease), transform .62s var(--ease);}
