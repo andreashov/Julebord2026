@@ -115,13 +115,14 @@ body{
      min-height:100dvh; display:flex; flex-direction:column;}
 .stage{position:relative; overflow-x:clip; margin:auto 0;}
 .screen{position:absolute; top:0; left:0; width:100%;
-  opacity:0; transform:translateX(52px) scale(.965);
-  pointer-events:none; transition:opacity .62s var(--ease), transform .62s var(--ease);}
+  opacity:0; transform:translateY(26px) scale(.972);
+  pointer-events:none; transition:opacity .62s var(--ease), transform .62s var(--ease);
+  will-change:opacity, transform;}
 .screen.active{opacity:1; transform:none; pointer-events:auto;}
-.screen.left{opacity:0; transform:translateX(-46px) scale(.98);}
+.screen.left{opacity:0; transform:translateY(-26px) scale(.986);}
 @media (prefers-reduced-motion:reduce){
   .screen{transition:opacity .01s;}
-  .blob, .emblem, #submit-btn, .glass::after{animation:none;}
+  .blob, .emblem, #submit-btn{animation:none;}
   .hero h1{animation:none;}
   .hero .divider, .hero p, .dept, .hero .yr, .form-h--screen, #screen-0 .info, #screen-0 .cta-wrap{animation:none;}
   .btn::after{display:none;}
@@ -399,22 +400,8 @@ footer .sn{color:var(--gold); letter-spacing:.45em;}
   50%{box-shadow:0 12px 34px -6px rgba(255,91,36,.95), 0 0 0 4px rgba(255,91,36,.14), inset 0 1px 0 rgba(255,255,255,.4);}
 }
 
-/* Roterende gull-glødkant rundt glasskortene */
-@property --ga{syntax:"<angle>"; initial-value:0deg; inherits:false;}
-.glass::after{
-  content:""; position:absolute; inset:0; border-radius:inherit; padding:1.5px; pointer-events:none;
-  background:conic-gradient(from var(--ga),
-    transparent 0deg, rgba(230,197,132,.7) 40deg, transparent 120deg,
-    transparent 220deg, rgba(230,197,132,.45) 280deg, transparent 350deg);
-  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor;
-  mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  mask-composite:exclude;
-  animation:gaspin 9s linear infinite;
-}
-@keyframes gaspin{to{--ga:360deg;}}
-/* Spar CPU: kjør glødekanten kun på den aktive skjermen */
-.screen:not(.active) .glass::after{animation-play-state:paused;}
+/* Rolig gull-tonet kant på glasskortene (statisk, ingen roterende beam) */
+.glass{border-color:rgba(230,197,132,.24);}
 
 /* Feirings-canvas (over alt, ingen interaksjon) */
 #burst{position:fixed; inset:0; z-index:50; pointer-events:none; display:none;}
@@ -613,21 +600,15 @@ const CONFIG = {
     if (i === current) return;
     var incoming = screens[i], outgoing = screens[current];
     outgoing.classList.remove("active");
-    outgoing.classList.toggle("left", i > current); // gå framover: forrige glir til venstre
-    incoming.classList.remove("left");
-    // Start posisjon for innkommende fra riktig side
-    incoming.style.transition = "none";
-    incoming.style.transform = (i > current ? "translateX(46px)" : "translateX(-46px)") + " scale(.98)";
-    incoming.offsetHeight; // reflow
-    incoming.style.transition = "";
+    outgoing.classList.add("left");     // utgående toner ut og glir opp
+    incoming.classList.remove("left");  // innkommende toner inn fra base (nedenfra)
     incoming.classList.add("active");
-    incoming.style.transform = "";
     current = i;
-    // Skru på høyde-animasjon KUN under skjermbyttet, så rydd den bort etterpå.
-    stage.style.transition = "height .55s var(--ease)";
+    // Myk høyde-animasjon under skjermbyttet, så rydd den bort etterpå.
+    stage.style.transition = "height .62s var(--ease)";
     setHeight();
     clearTimeout(stageTimer);
-    stageTimer = setTimeout(function(){ stage.style.transition = ""; }, 620);
+    stageTimer = setTimeout(function(){ stage.style.transition = ""; }, 660);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
