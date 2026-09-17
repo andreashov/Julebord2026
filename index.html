@@ -79,6 +79,20 @@ body{
 #snow{position:fixed; inset:0; z-index:-1; pointer-events:none;}
 /* Øl-laget ligger BAK innholdet (tekst/knapper står foran, som på utsiden av glasset) */
 #beer{position:fixed; inset:0; z-index:-1; pointer-events:none; display:none;}
+
+/* Nisse med slede og reinsdyr — liten, i bakgrunnen, flyr over med jevne mellomrom */
+.sleigh{position:fixed; top:14%; left:0; width:150px; height:auto; z-index:-1; pointer-events:none;
+  color:rgba(245,226,178,0.5); filter:drop-shadow(0 0 7px rgba(245,226,178,0.35));
+  opacity:0; will-change:transform, opacity;
+  animation:sleighFly 30s linear infinite;}
+@keyframes sleighFly{
+  0%{transform:translate(-40vw, 6vh) rotate(-3deg); opacity:0;}
+  10%{opacity:.85;}
+  50%{transform:translate(45vw, -4vh) rotate(-2deg);}
+  90%{opacity:.85;}
+  100%{transform:translate(135vw, 5vh) rotate(-3deg); opacity:0;}
+}
+@media (prefers-reduced-motion:reduce){.sleigh{display:none;}}
 .emblem{cursor:pointer;}
 
 /* Tindrende stjernehimmel (bak alt) */
@@ -425,6 +439,38 @@ footer .sn{color:var(--gold); letter-spacing:.45em;}
 <canvas id="snow" aria-hidden="true"></canvas>
 <canvas id="burst" aria-hidden="true"></canvas>
 <canvas id="beer" aria-hidden="true"></canvas>
+
+<!-- Liten nisse med slede og reinsdyr som glir over himmelen i bakgrunnen -->
+<svg class="sleigh" viewBox="0 0 210 70" aria-hidden="true">
+  <g fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+    <!-- reins -->
+    <path d="M64 32 Q100 24 128 36" fill="none" stroke-width="1"/>
+    <!-- reinsdyr 1 -->
+    <g>
+      <ellipse cx="22" cy="32" rx="11" ry="5"/>
+      <path d="M11 36 l-4 9 M16 37 l-1 9 M29 36 l4 9 M32 35 l6 8" fill="none"/>
+      <path d="M31 29 Q36 22 36 15" fill="none" stroke-width="3"/>
+      <circle cx="37" cy="14" r="3"/>
+      <path d="M36 11 l-2 -6 M36 11 l2 -6 M38 11 l4 -4 M38 11 l5 -1" fill="none" stroke-width="1.1"/>
+    </g>
+    <!-- reinsdyr 2 -->
+    <g transform="translate(34,2)">
+      <ellipse cx="22" cy="32" rx="11" ry="5"/>
+      <path d="M11 36 l-4 9 M16 37 l-1 9 M29 36 l4 9 M32 35 l6 8" fill="none"/>
+      <path d="M31 29 Q36 22 36 15" fill="none" stroke-width="3"/>
+      <circle cx="37" cy="14" r="3"/>
+      <path d="M36 11 l-2 -6 M36 11 l2 -6 M38 11 l4 -4 M38 11 l5 -1" fill="none" stroke-width="1.1"/>
+    </g>
+    <!-- slede -->
+    <path d="M132 46 q-3 -15 9 -15 l16 0 q2 9 11 9 l15 0 q5 0 5 6 q0 5 -6 5 l-44 0 q-5 0 -6 -5 z"/>
+    <path d="M126 54 q34 9 62 0" fill="none" stroke-width="1.8"/>
+    <!-- nisse -->
+    <circle cx="150" cy="24" r="4"/>
+    <path d="M144 33 q6 -7 12 -3 q3 3 2 8 z"/>
+    <path d="M146 21 q3 -7 9 -4 l-2 5 z"/>
+  </g>
+</svg>
+
 <div class="lights" id="lights" aria-hidden="true"></div>
 
 <main class="app">
@@ -985,28 +1031,56 @@ const CONFIG = {
   if (!reduce){
     var cv = document.getElementById("snow"), ctx = cv.getContext("2d");
     var flakes = [], W, H, DPR = Math.min(window.devicePixelRatio || 1, 2);
+
+    // Forhåndstegn en liten 6-armet snøkrystall som sprite
+    var SS = 44;
+    var flakeSprite = document.createElement("canvas");
+    flakeSprite.width = flakeSprite.height = SS * DPR;
+    (function(){
+      var g = flakeSprite.getContext("2d"); g.setTransform(DPR, 0, 0, DPR, 0, 0);
+      g.translate(SS / 2, SS / 2);
+      var R = SS / 2 - 4;
+      g.strokeStyle = "rgba(255,255,255,0.96)"; g.lineCap = "round"; g.lineJoin = "round"; g.lineWidth = 1.5;
+      for (var a = 0; a < 6; a++){
+        g.save(); g.rotate(a * Math.PI / 3);
+        g.beginPath();
+        g.moveTo(0, 0); g.lineTo(0, -R);
+        g.moveTo(0, -R * 0.5); g.lineTo(R * 0.26, -R * 0.68);
+        g.moveTo(0, -R * 0.5); g.lineTo(-R * 0.26, -R * 0.68);
+        g.moveTo(0, -R * 0.78); g.lineTo(R * 0.18, -R * 0.92);
+        g.moveTo(0, -R * 0.78); g.lineTo(-R * 0.18, -R * 0.92);
+        g.stroke(); g.restore();
+      }
+      g.fillStyle = "rgba(255,255,255,0.96)"; g.beginPath(); g.arc(0, 0, 1.4, 0, 6.283); g.fill();
+    })();
+
     function resize(){
       W = cv.width = innerWidth * DPR; H = cv.height = innerHeight * DPR;
       cv.style.width = innerWidth + "px"; cv.style.height = innerHeight + "px";
-      var n = Math.round(innerWidth / 15); // konstant snø — tydeligere, men bak innhold
+      var n = Math.round(innerWidth / 22); // små krystaller som snør ned
       flakes = [];
-      for (var i=0;i<n;i++) flakes.push({
-        x: Math.random()*W, y: Math.random()*H,
-        r: (Math.random()*2.4 + 0.9) * DPR,
-        s: (Math.random()*0.45 + 0.18) * DPR,
-        d: Math.random()*Math.PI*2,
-        o: Math.random()*0.5 + 0.22
+      for (var i = 0; i < n; i++) flakes.push({
+        x: Math.random() * W, y: Math.random() * H,
+        size: (Math.random() * 10 + 8) * DPR,
+        s: (Math.random() * 0.45 + 0.18) * DPR,
+        d: Math.random() * Math.PI * 2,
+        a: Math.random() * Math.PI * 2, aS: (Math.random() * 0.02 - 0.01),
+        o: Math.random() * 0.45 + 0.25
       });
     }
     function tick(){
-      ctx.clearRect(0,0,W,H);
-      for (var i=0;i<flakes.length;i++){
+      ctx.clearRect(0, 0, W, H);
+      for (var i = 0; i < flakes.length; i++){
         var f = flakes[i];
-        f.y += f.s; f.d += 0.008; f.x += Math.sin(f.d) * 0.3 * DPR;
-        if (f.y > H + 5){ f.y = -5; f.x = Math.random()*W; }
-        ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, Math.PI*2);
-        ctx.fillStyle = "rgba(255,255,255," + f.o + ")"; ctx.fill();
+        f.y += f.s; f.d += 0.008; f.x += Math.sin(f.d) * 0.3 * DPR; f.a += f.aS;
+        if (f.y > H + f.size){ f.y = -f.size; f.x = Math.random() * W; }
+        ctx.save();
+        ctx.globalAlpha = f.o;
+        ctx.translate(f.x, f.y); ctx.rotate(f.a);
+        ctx.drawImage(flakeSprite, -f.size / 2, -f.size / 2, f.size, f.size);
+        ctx.restore();
       }
+      ctx.globalAlpha = 1;
       requestAnimationFrame(tick);
     }
     resize(); tick();
