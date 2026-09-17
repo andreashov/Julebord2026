@@ -37,7 +37,7 @@
   --glass-brd:rgba(255,255,255,.16);
   --glass-hi:rgba(255,255,255,.55);
   --glass-shadow:0 24px 60px -18px rgba(0,0,0,.7);
-  --radius:30px;
+  --radius:24px;
   --radius-sm:18px;
   --maxw:520px;
 
@@ -115,7 +115,7 @@ body{
   .screen{transition:opacity .01s;}
   .blob, .emblem, #submit-btn, .glass::after{animation:none;}
   .hero h1{animation:none;}
-  .hero .divider, .hero p, .dept, .hero .yr, #screen-0 .info, #screen-0 .cta-wrap{animation:none;}
+  .hero .divider, .hero p, .dept, .hero .yr, .form-h--screen, #screen-0 .info, #screen-0 .cta-wrap{animation:none;}
   .btn::after{display:none;}
   .btn-gold::before{animation:none; display:none;}
   .bulb, .star{animation:none;}
@@ -191,7 +191,14 @@ body{
 .about{color:var(--ink-soft); font-size:1rem; line-height:1.6; margin:2px 0 16px;
   padding-bottom:18px; border-bottom:1px solid rgba(255,255,255,.07);}
 .form-h{font-family:var(--font-display); font-size:1.65rem; font-weight:600; margin:2px 0 4px; letter-spacing:.3px;}
-.form-h--screen{font-size:2rem; margin:4px 6px 18px;}
+.form-h--screen{font-size:2rem; margin:4px 6px 18px; letter-spacing:.3px;
+  background:
+    linear-gradient(105deg, transparent 40%, rgba(255,255,255,.92) 50%, transparent 60%),
+    linear-gradient(180deg,#fff 0%, #f4e8cf 55%, var(--gold) 100%);
+  background-size:250% 100%, 100% 100%; background-position:180% 0, 0 0; background-repeat:no-repeat;
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  text-shadow:0 2px 22px rgba(230,197,132,.16);
+  animation:shimmer 3s linear infinite;}
 .form-sub{color:var(--ink-soft); font-size:.92rem; margin:0 0 20px;}
 .rows{list-style:none; margin:0; padding:0;}
 .rows li{display:flex; gap:14px; align-items:center; padding:11px 0; border-bottom:1px solid rgba(255,255,255,.07);}
@@ -328,8 +335,7 @@ footer .sn{color:var(--gold); letter-spacing:.45em;}
 /* ---- Apple-inspirerte grupperte lister (skjema) ---- */
 .gsection-h{font-size:.7rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase;
   color:var(--gold); margin:2px 6px 8px; }
-.glist{border-radius:20px; padding:0; margin-bottom:18px;}
-.glist::after{display:none;} /* ingen roterende glødkant på listene (renere + lettere) */
+.glist{border-radius:24px; padding:0; margin-bottom:18px;}
 .glist .grow{position:relative; display:flex; align-items:center; gap:12px;
   min-height:54px; padding:8px 18px; margin:0; cursor:text;}
 .glist .grow--select{cursor:pointer;}
@@ -339,7 +345,8 @@ footer .sn{color:var(--gold); letter-spacing:.45em;}
 .glist .grow + .grow::before{content:""; position:absolute; top:0; left:18px; right:0; height:1px;
   background:rgba(255,255,255,.09);}
 .glist .grow:focus-within{background:rgba(230,197,132,.06);}
-.gl{flex:0 0 auto; min-width:88px; color:var(--gold); font-weight:600; font-size:.96rem; letter-spacing:.2px;}
+.gl{flex:0 0 auto; min-width:84px; color:var(--gold); font-weight:700; font-size:.72rem;
+  letter-spacing:.14em; text-transform:uppercase;}
 .gin{flex:1 1 auto; width:100%; min-width:0; background:transparent; border:0; box-shadow:none; border-radius:0;
   outline:0; color:var(--ink); font-family:inherit; font-size:16px; letter-spacing:.2px; padding:8px 0; text-align:left;}
 .gin:focus{background:transparent; box-shadow:none; border:0;}
@@ -389,9 +396,11 @@ footer .sn{color:var(--gold); letter-spacing:.45em;}
   -webkit-mask-composite:xor;
   mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   mask-composite:exclude;
-  animation:gaspin 7s linear infinite;
+  animation:gaspin 9s linear infinite;
 }
 @keyframes gaspin{to{--ga:360deg;}}
+/* Spar CPU: kjør glødekanten kun på den aktive skjermen */
+.screen:not(.active) .glass::after{animation-play-state:paused;}
 
 /* Feirings-canvas (over alt, ingen interaksjon) */
 #burst{position:fixed; inset:0; z-index:50; pointer-events:none; display:none;}
