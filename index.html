@@ -73,7 +73,7 @@ body{
    ========================================================================= */
 .bg{position:fixed; inset:0; z-index:-2; overflow:hidden; background:
   radial-gradient(120% 80% at 50% -10%, #0c2016 0%, var(--bg-1) 45%, var(--bg-0) 100%);}
-.blob{position:absolute; border-radius:50%; filter:blur(60px); opacity:.5; mix-blend-mode:screen; will-change:transform;}
+.blob{position:absolute; border-radius:50%; filter:blur(46px); opacity:.5; will-change:transform;}
 .blob.b1{width:60vw;height:60vw;left:-15vw;top:-10vh;background:radial-gradient(circle,#1f6b48,transparent 65%);animation:drift1 34s var(--ease) infinite;}
 .blob.b2{width:58vw;height:58vw;right:-18vw;top:16vh;background:radial-gradient(circle,#8f2130,transparent 66%);opacity:.52;animation:drift2 44s var(--ease) infinite;}
 .blob.b3{width:48vw;height:48vw;left:8vw;bottom:-16vh;background:radial-gradient(circle,#b98a3e,transparent 62%);opacity:.32;animation:drift3 52s var(--ease) infinite;}
@@ -136,8 +136,8 @@ body{
 .glass{
   position:relative;
   background:linear-gradient(180deg, var(--glass-bg), var(--glass-bg-2));
-  -webkit-backdrop-filter:blur(26px) saturate(175%);
-  backdrop-filter:blur(26px) saturate(175%);
+  -webkit-backdrop-filter:blur(14px) saturate(140%);
+  backdrop-filter:blur(14px) saturate(140%);
   border:1px solid var(--glass-brd);
   border-radius:var(--radius);
   box-shadow:var(--glass-shadow), inset 0 1px 0 var(--glass-hi), inset 0 -1px 1px rgba(0,0,0,.35);
@@ -254,7 +254,7 @@ body{
 .btn-glass{
   color:var(--ink);
   background:var(--glass-bg); border:1px solid var(--glass-brd);
-  -webkit-backdrop-filter:blur(18px) saturate(160%); backdrop-filter:blur(18px) saturate(160%);
+  -webkit-backdrop-filter:blur(12px) saturate(140%); backdrop-filter:blur(12px) saturate(140%);
   box-shadow:inset 0 1px 0 var(--glass-hi);}
 .btn-vipps{color:#fff; background:linear-gradient(180deg,#ff6a37,var(--vipps));
   box-shadow:0 10px 26px -10px rgba(255,91,36,.75), inset 0 1px 0 rgba(255,255,255,.4);}
@@ -402,6 +402,11 @@ footer .sn{color:var(--gold); letter-spacing:.45em;}
 
 /* Rolig gull-tonet kant på glasskortene (statisk, ingen roterende beam) */
 .glass{border-color:rgba(230,197,132,.24);}
+
+/* Under skjermbytte: frys all bakgrunns-/tekstanimasjon for jevn overgang (særlig Chromium/Edge) */
+body.nav .blob, body.nav .emblem, body.nav .hero h1, body.nav .dept, body.nav .hero .yr,
+body.nav .form-h--screen, body.nav #submit-btn, body.nav .btn-gold::before,
+body.nav .bulb, body.nav .star{animation-play-state:paused;}
 
 /* Feirings-canvas (over alt, ingen interaksjon) */
 #burst{position:fixed; inset:0; z-index:50; pointer-events:none; display:none;}
@@ -577,6 +582,7 @@ const CONFIG = {
   var isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)
     || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
   var beerActive = false, beerDrainAt = -1, beerDrainStartLvl = 0, beerLvlNow = 0;
+  var navPaused = false, navTimer;
   var d = CONFIG.detaljer;
   document.getElementById("v-date").firstChild.textContent = d.dato;
   document.getElementById("v-time").textContent = d.tid;
@@ -604,6 +610,10 @@ const CONFIG = {
     incoming.classList.remove("left");  // innkommende toner inn fra base (nedenfra)
     incoming.classList.add("active");
     current = i;
+    // Frys all bakgrunnsbevegelse under skjermbyttet (jevnere i Chromium/Edge).
+    document.body.classList.add("nav"); navPaused = true;
+    clearTimeout(navTimer);
+    navTimer = setTimeout(function(){ document.body.classList.remove("nav"); navPaused = false; }, 700);
     // Myk høyde-animasjon under skjermbyttet, så rydd den bort etterpå.
     stage.style.transition = "height .62s var(--ease)";
     setHeight();
@@ -907,7 +917,7 @@ const CONFIG = {
     function resize(){
       W = cv.width = innerWidth * DPR; H = cv.height = innerHeight * DPR;
       cv.style.width = innerWidth + "px"; cv.style.height = innerHeight + "px";
-      var n = Math.round(innerWidth / 22); // små krystaller som snør ned
+      var n = Math.round(innerWidth / 34); // små krystaller som snør ned (færre = lettere i Chromium)
       flakes = [];
       for (var i = 0; i < n; i++) flakes.push({
         x: Math.random() * W, y: Math.random() * H,
@@ -919,6 +929,7 @@ const CONFIG = {
       });
     }
     function tick(){
+      if (navPaused){ requestAnimationFrame(tick); return; } // frys snø under skjermbytte
       ctx.clearRect(0, 0, W, H);
       for (var i = 0; i < flakes.length; i++){
         var f = flakes[i];
