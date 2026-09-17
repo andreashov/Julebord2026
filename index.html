@@ -80,19 +80,6 @@ body{
 /* Øl-laget ligger BAK innholdet (tekst/knapper står foran, som på utsiden av glasset) */
 #beer{position:fixed; inset:0; z-index:-1; pointer-events:none; display:none;}
 
-/* Nisse med slede og reinsdyr — liten, i bakgrunnen, flyr over med jevne mellomrom */
-.sleigh{position:fixed; top:14%; left:0; width:150px; height:auto; z-index:-1; pointer-events:none;
-  color:rgba(245,226,178,0.5); filter:drop-shadow(0 0 7px rgba(245,226,178,0.35));
-  opacity:0; will-change:transform, opacity;
-  animation:sleighFly 30s linear infinite;}
-@keyframes sleighFly{
-  0%{transform:translate(-40vw, 6vh) rotate(-3deg); opacity:0;}
-  10%{opacity:.85;}
-  50%{transform:translate(45vw, -4vh) rotate(-2deg);}
-  90%{opacity:.85;}
-  100%{transform:translate(135vw, 5vh) rotate(-3deg); opacity:0;}
-}
-@media (prefers-reduced-motion:reduce){.sleigh{display:none;}}
 .emblem{cursor:pointer;}
 
 /* Tindrende stjernehimmel (bak alt) */
@@ -439,38 +426,6 @@ footer .sn{color:var(--gold); letter-spacing:.45em;}
 <canvas id="snow" aria-hidden="true"></canvas>
 <canvas id="burst" aria-hidden="true"></canvas>
 <canvas id="beer" aria-hidden="true"></canvas>
-
-<!-- Liten nisse med slede og reinsdyr som glir over himmelen i bakgrunnen -->
-<svg class="sleigh" viewBox="0 0 210 70" aria-hidden="true">
-  <g fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-    <!-- reins -->
-    <path d="M64 32 Q100 24 128 36" fill="none" stroke-width="1"/>
-    <!-- reinsdyr 1 -->
-    <g>
-      <ellipse cx="22" cy="32" rx="11" ry="5"/>
-      <path d="M11 36 l-4 9 M16 37 l-1 9 M29 36 l4 9 M32 35 l6 8" fill="none"/>
-      <path d="M31 29 Q36 22 36 15" fill="none" stroke-width="3"/>
-      <circle cx="37" cy="14" r="3"/>
-      <path d="M36 11 l-2 -6 M36 11 l2 -6 M38 11 l4 -4 M38 11 l5 -1" fill="none" stroke-width="1.1"/>
-    </g>
-    <!-- reinsdyr 2 -->
-    <g transform="translate(34,2)">
-      <ellipse cx="22" cy="32" rx="11" ry="5"/>
-      <path d="M11 36 l-4 9 M16 37 l-1 9 M29 36 l4 9 M32 35 l6 8" fill="none"/>
-      <path d="M31 29 Q36 22 36 15" fill="none" stroke-width="3"/>
-      <circle cx="37" cy="14" r="3"/>
-      <path d="M36 11 l-2 -6 M36 11 l2 -6 M38 11 l4 -4 M38 11 l5 -1" fill="none" stroke-width="1.1"/>
-    </g>
-    <!-- slede -->
-    <path d="M132 46 q-3 -15 9 -15 l16 0 q2 9 11 9 l15 0 q5 0 5 6 q0 5 -6 5 l-44 0 q-5 0 -6 -5 z"/>
-    <path d="M126 54 q34 9 62 0" fill="none" stroke-width="1.8"/>
-    <!-- nisse -->
-    <circle cx="150" cy="24" r="4"/>
-    <path d="M144 33 q6 -7 12 -3 q3 3 2 8 z"/>
-    <path d="M146 21 q3 -7 9 -4 l-2 5 z"/>
-  </g>
-</svg>
-
 <div class="lights" id="lights" aria-hidden="true"></div>
 
 <main class="app">
