@@ -660,14 +660,16 @@ const CONFIG = {
       return baseY + wave - men;
     }
 
-    // Skumbobler i jittret rutenett over HELE bredden (ingen hull, ingen flimring)
-    var foam = [], fSp = 18;
-    for (var fc = -fSp; fc <= W + fSp; fc += fSp){
-      for (var fr = 0; fr < 3; fr++){
-        foam.push({ x: fc + (Math.random() * fSp - fSp / 2),
-          sz: (fr === 0 ? 10 : 7) + Math.random() * 6,
-          off: fr * 9 + Math.random() * 6, sp: Math.random() * 6.28, spS: Math.random() * 1.4 + 0.6 });
-      }
+    // Tett skum-felt: mange bobler i varierte størrelser (flest små) fordelt over hele skumhøyden
+    var foam = [], fCount = Math.round(W / 5);
+    for (var fi = 0; fi < fCount; fi++){
+      foam.push({
+        x: Math.random() * W,
+        ny: Math.pow(Math.random(), 0.75),           // litt tettere mot bunnkanten
+        sz: 2 + Math.random() * Math.random() * 13,  // 2..15px, flest små
+        sp: Math.random() * 6.28, spS: Math.random() * 1.2 + 0.5,
+        jx: (Math.random() - 0.5) * 4
+      });
     }
 
     var bubbles = [], pops = [], emitAcc = 0, t0 = performance.now(), last = t0;
@@ -742,17 +744,23 @@ const CONFIG = {
       x.stroke();
 
       // Kremet skum (lag av myke bobler som rir på overflaten)
-      var headH = (phase === "fill" ? 22 : 34) * (0.55 + 0.45 * headGrow);
-      // Tett kremet base-bånd som dekker HELE bredden (over overflaten)
+      var headH = (phase === "fill" ? 26 : 42) * (0.55 + 0.45 * headGrow);
+      // 1) Opak kremet øvre del (dekker toppen ~60% av skummet, ingen hull)
       x.beginPath();
       for (var xt = 0; xt <= W; xt += 7){ var yt = surfaceY(levelY, xt, ph) - headH; if (xt === 0) x.moveTo(0, yt); else x.lineTo(xt, yt); }
-      for (var xb = W; xb >= 0; xb -= 7) x.lineTo(xb, surfaceY(levelY, xb, ph) + 4);
-      x.closePath(); x.fillStyle = "rgba(249,243,228,0.88)"; x.fill();
-      // Lag av skumbobler for kremet tekstur (full bredde)
+      for (var xb = W; xb >= 0; xb -= 7) x.lineTo(xb, surfaceY(levelY, xb, ph) - headH * 0.38);
+      x.closePath();
+      var midY = surfaceY(levelY, W / 2, ph);
+      var fg = x.createLinearGradient(0, midY - headH, 0, midY - headH * 0.3);
+      fg.addColorStop(0, "rgba(253,249,240,0.97)");
+      fg.addColorStop(1, "rgba(248,241,224,0.8)");
+      x.fillStyle = fg; x.fill();
+      // 2) Tett boblelag med varierte størrelser → tekstur + ragget bunnkant (bobler henger ned i ølet)
       for (var k = 0; k < foam.length; k++){
         var fb = foam[k]; fb.sp += dt * fb.spS;
-        var fyb = surfaceY(levelY, fb.x, ph) - fb.off * (headH / 34) - 1 + Math.sin(fb.sp) * 1.0;
-        blit(foamSprite, fb.x, fyb, fb.sz * (0.7 + 0.5 * headGrow));
+        var baseY = surfaceY(levelY, fb.x, ph);
+        var fyb = baseY - headH + fb.ny * headH * 1.18 + Math.sin(fb.sp) * 0.8;
+        blit(foamSprite, fb.x + fb.jx, fyb, fb.sz * (0.75 + 0.4 * headGrow));
       }
 
       // Bobler som sprekker ved overflaten: krusning + liten skumdott
