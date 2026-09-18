@@ -671,10 +671,18 @@ const CONFIG = {
     }
 
     var bubbles = [], pops = [], emitAcc = 0, t0 = performance.now(), last = t0;
-    // Seed bobler med en gang så de er der fra første frame
-    for (var sd = 0; sd < 45; sd++) bubbles.push({ x: Math.random() * W, y: H - Math.random() * H * 0.18,
-      r: Math.random() * 1.3 + 0.6, vy: Math.random() * 8 + 5, grow: Math.random() * 0.9 + 0.35,
-      wob: Math.random() * 6.28, wobS: Math.random() * 1.8 + 0.7 });
+    // Lag én boble ved bunnen (eller angitt y). Størrelsesvariasjon: flest små, noen større.
+    function spawnBubble(y0){
+      var r = 0.8 + Math.random() * Math.random() * 3.4;
+      bubbles.push({
+        x: Math.random() * W, y: y0, r: r,
+        vy: (Math.random() * 30 + 28) + r * 6,      // stigefart, større stiger litt raskere
+        grow: Math.random() * 0.4 + 0.15,
+        wob: Math.random() * 6.28, wobS: Math.random() * 1.5 + 0.6, amp: Math.random() * 0.6 + 0.25
+      });
+    }
+    // Litt liv fra første frame (nær bunnen)
+    for (var sd = 0; sd < 50; sd++) spawnBubble(H - Math.random() * H * 0.14);
 
     (function frame(t){
       var dt = Math.min((t - last) / 1000, 0.05); last = t;
@@ -711,21 +719,18 @@ const CONFIG = {
       x.fillStyle = rg2; x.fillRect(W * 0.84, levelY, W * 0.16, H);
       x.restore();
 
-      // Karbonasjon: jevn, kontinuerlig strøm (ingen pulsering)
+      // Karbonasjon: jevn, kontinuerlig strøm fra bunnen (frame-uavhengig, ingen pulsering)
       if (phase !== "drain"){
-        var span = Math.max(1, H - levelY);
-        emitAcc += 85 * dt;                       // ~85 bobler/sek, jevnt fordelt
+        emitAcc += 20 * dt;                       // ~20 bobler/sek, jevnt fordelt
         var nEmit = Math.floor(emitAcc); emitAcc -= nEmit;
         for (var e = 0; e < nEmit; e++){
-          if (bubbles.length < 240)
-            bubbles.push({ x: Math.random() * W, y: levelY + span * (0.2 + 0.8 * Math.random()),
-              r: Math.random() * 1.3 + 0.6, vy: Math.random() * 8 + 5, grow: Math.random() * 0.9 + 0.35,
-              wob: Math.random() * 6.28, wobS: Math.random() * 1.8 + 0.7 });
+          if (bubbles.length < 340) spawnBubble(H - 2 - Math.random() * 6);
         }
       }
       for (var i = bubbles.length - 1; i >= 0; i--){
         var b = bubbles[i];
-        b.vy += 6 * dt; b.r += b.grow * dt; b.y -= b.vy * dt; b.wob += b.wobS * dt; b.x += Math.sin(b.wob) * 0.45;
+        b.vy += 10 * dt; b.r += b.grow * dt;      // liten oppdrifts-akselerasjon
+        b.y -= b.vy * dt; b.wob += b.wobS * dt; b.x += Math.sin(b.wob) * b.amp;
         var surf = surfaceY(levelY, b.x, ph);
         if (b.y < surf + 2){ pops.push({ x: b.x, y: surf + 2, r: b.r, life: 1 }); bubbles.splice(i, 1); continue; }
         blit(bubbleSprite, b.x, b.y, b.r * 2.4);
