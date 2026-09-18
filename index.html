@@ -687,13 +687,13 @@ const CONFIG = {
 
     (function frame(t){
       var dt = Math.min((t - last) / 1000, 0.05); last = t;
-      var el = t - t0, lvl, phase, headGrow;
+      var el = t - t0, lvl, phase, headFrac;
       if (beerDrainAt >= 0){
         var dp = (t - beerDrainAt) / DRAIN;
         if (dp >= 1){ x.clearRect(0, 0, W, H); c.style.display = "none"; beerActive = false; beerDrainAt = -1; return; }
-        lvl = beerDrainStartLvl * (1 - dp); phase = "drain"; headGrow = 0.5;
-      } else if (el < FILL){ var p = el / FILL; lvl = 0.12 + (TOP - 0.12) * (1 - Math.pow(1 - p, 2)); phase = "fill"; headGrow = p; }
-      else { lvl = TOP; phase = "stay"; headGrow = 0.9; }
+        lvl = beerDrainStartLvl * (1 - dp); phase = "drain"; headFrac = 1 - dp;
+      } else if (el < FILL){ var p = el / FILL, e2 = 1 - Math.pow(1 - p, 2); lvl = 0.12 + (TOP - 0.12) * e2; phase = "fill"; headFrac = e2; }
+      else { lvl = TOP; phase = "stay"; headFrac = 1; }
       beerLvlNow = lvl;
 
       var levelY = H - lvl * H, ph = el / 360;
@@ -742,18 +742,22 @@ const CONFIG = {
       for (var xs = 0; xs <= W; xs += 7){ var ys = surfaceY(levelY, xs, ph) + 3; if (xs === 0) x.moveTo(xs, ys); else x.lineTo(xs, ys); }
       x.stroke();
 
-      // Kremet skum (lag av myke bobler som rir på overflaten)
-      var headH = (phase === "fill" ? 22 : 34) * (0.55 + 0.45 * headGrow);
-      // Tett kremet base-bånd som dekker HELE bredden (over overflaten)
+      // Kremet skum (lag av myke bobler som rir på overflaten). Jevn høyde – ingen hopp.
+      var headH = 8 + 30 * headFrac;
+      // Tett kremet base-bånd som dekker HELE bredden, litt utenfor kantene (ingen hull venstre/høyre)
       x.beginPath();
-      for (var xt = 0; xt <= W; xt += 7){ var yt = surfaceY(levelY, xt, ph) - headH; if (xt === 0) x.moveTo(0, yt); else x.lineTo(xt, yt); }
+      x.moveTo(-8, surfaceY(levelY, 0, ph) - headH);
+      for (var xt = 0; xt <= W; xt += 7) x.lineTo(xt, surfaceY(levelY, xt, ph) - headH);
+      x.lineTo(W + 8, surfaceY(levelY, W, ph) - headH);
+      x.lineTo(W + 8, surfaceY(levelY, W, ph) + 4);
       for (var xb = W; xb >= 0; xb -= 7) x.lineTo(xb, surfaceY(levelY, xb, ph) + 4);
-      x.closePath(); x.fillStyle = "rgba(249,243,228,0.88)"; x.fill();
+      x.lineTo(-8, surfaceY(levelY, 0, ph) + 4);
+      x.closePath(); x.fillStyle = "rgba(249,243,228,0.94)"; x.fill();
       // Lag av skumbobler for kremet tekstur (full bredde)
       for (var k = 0; k < foam.length; k++){
         var fb = foam[k]; fb.sp += dt * 1.2;
         var fyb = surfaceY(levelY, fb.x, ph) - fb.off * (headH / 34) - 1 + Math.sin(fb.sp) * 1.0;
-        blit(foamSprite, fb.x, fyb, fb.sz * (0.7 + 0.5 * headGrow));
+        blit(foamSprite, fb.x, fyb, fb.sz * (0.7 + 0.5 * headFrac));
       }
 
       // Bobler som sprekker ved overflaten: krusning + liten skumdott
