@@ -73,16 +73,19 @@ body{
    ========================================================================= */
 .bg{position:fixed; inset:0; z-index:-2; overflow:hidden; background:
   radial-gradient(120% 80% at 50% -10%, #0c2016 0%, var(--bg-1) 45%, var(--bg-0) 100%);}
-.blob{position:absolute; border-radius:50%; filter:blur(46px); opacity:.5; will-change:transform;}
-.blob.b1{width:60vw;height:60vw;left:-15vw;top:-10vh;background:radial-gradient(circle,#1f6b48,transparent 65%);animation:drift1 34s var(--ease) infinite;}
-.blob.b2{width:58vw;height:58vw;right:-18vw;top:16vh;background:radial-gradient(circle,#8f2130,transparent 66%);opacity:.52;animation:drift2 44s var(--ease) infinite;}
-.blob.b3{width:48vw;height:48vw;left:8vw;bottom:-16vh;background:radial-gradient(circle,#b98a3e,transparent 62%);opacity:.32;animation:drift3 52s var(--ease) infinite;}
+.blob{position:absolute; border-radius:50%; filter:blur(46px); opacity:.62; will-change:transform;}
+.blob.b1{width:62vw;height:62vw;left:-14vw;top:4vh;background:radial-gradient(circle,#2a8659,transparent 66%);animation:drift1 34s var(--ease) infinite;}
+.blob.b2{width:60vw;height:60vw;right:-18vw;top:20vh;background:radial-gradient(circle,#a5273a,transparent 66%);opacity:.6;animation:drift2 44s var(--ease) infinite;}
+.blob.b3{width:52vw;height:52vw;left:6vw;bottom:-6vh;background:radial-gradient(circle,#cf9a44,transparent 63%);opacity:.5;animation:drift3 52s var(--ease) infinite;}
 @keyframes drift1{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(8vw,6vh) scale(1.12);}}
 @keyframes drift2{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-7vw,10vh) scale(1.08);}}
 @keyframes drift3{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(6vw,-8vh) scale(1.15);}}
 .grain{position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:.03;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
 #snow{position:fixed; inset:0; z-index:-1; pointer-events:none;}
+/* Toner topp og bunn til svart, lar fargene lyse i midten */
+.vignette{position:fixed; inset:0; z-index:-1; pointer-events:none;
+  background:linear-gradient(180deg, #000 0%, rgba(0,0,0,0) 26%, rgba(0,0,0,0) 72%, #000 100%);}
 /* Øl-laget ligger BAK innholdet (tekst/knapper står foran, som på utsiden av glasset) */
 #beer{position:fixed; inset:0; z-index:-1; pointer-events:none; display:none;}
 
@@ -422,6 +425,7 @@ body.nav .bulb, body.nav .star{animation-play-state:paused;}
 <canvas id="snow" aria-hidden="true"></canvas>
 <canvas id="burst" aria-hidden="true"></canvas>
 <canvas id="beer" aria-hidden="true"></canvas>
+<div class="vignette" aria-hidden="true"></div>
 <div class="lights" id="lights" aria-hidden="true"></div>
 
 <main class="app">
